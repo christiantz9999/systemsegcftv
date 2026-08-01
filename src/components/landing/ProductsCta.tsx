@@ -1,5 +1,5 @@
 import { Check, MessageCircle } from "lucide-react";
-import cameraBullet from "@/assets/camera-bullet-real.jpg";
+import cameraSpeedDome from "@/assets/camera-speeddome.jpg";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 
 const PRODUCT_LINES = [
