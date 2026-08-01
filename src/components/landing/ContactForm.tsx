@@ -93,7 +93,7 @@ export function ContactForm() {
           </span>
           <h2 className="mt-4 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
             Entre em contato e{" "}
-            <span className="text-brand-gradient">solicite seu orçamento</span>
+            <span className="text-primary">solicite seu orçamento</span>
           </h2>
           <p className="mt-4 text-muted-foreground">
             Preencha o formulário e sua mensagem chega completa no nosso WhatsApp.

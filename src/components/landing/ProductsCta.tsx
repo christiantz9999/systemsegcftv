@@ -1,5 +1,5 @@
 import { Check, MessageCircle } from "lucide-react";
-import cameraBullet from "@/assets/camera-bullet.jpg";
+import cameraBullet from "@/assets/camera-bullet-real.jpg";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 
 const PRODUCT_LINES = [
@@ -12,10 +12,10 @@ export function ProductsCta() {
   return (
     <section id="equipamentos" className="scroll-mt-20 py-20 lg:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-3xl border border-primary/25 bg-gradient-to-br from-card via-card to-accent/10">
+        <div className="relative overflow-hidden rounded-3xl border border-border bg-card">
           <div
             aria-hidden
-            className="pointer-events-none absolute -right-24 -top-24 size-96 rounded-full bg-primary/15 blur-[120px]"
+            className="pointer-events-none absolute -right-24 -top-24 size-96 rounded-full bg-primary/10 blur-[120px]"
           />
           <div className="grid items-center gap-10 p-8 sm:p-12 lg:grid-cols-2 lg:p-16">
             <div>
@@ -24,7 +24,7 @@ export function ProductsCta() {
               </span>
               <h2 className="mt-4 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
                 Compre equipamentos de segurança{" "}
-                <span className="text-brand-gradient">com quem entende</span>
+                <span className="text-primary">com quem entende</span>
               </h2>
               <p className="mt-4 leading-relaxed text-muted-foreground">
                 Além da instalação, vendemos produtos de alta qualidade com

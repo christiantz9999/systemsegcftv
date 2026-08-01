@@ -38,7 +38,7 @@ export function WhyUs() {
         <div className="relative order-2 lg:order-1">
           <div
             aria-hidden
-            className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-primary/25 to-accent/25 blur-2xl"
+            className="absolute -inset-4 rounded-3xl bg-primary/20 blur-2xl"
           />
           <img
             src={technician}
@@ -62,7 +62,7 @@ export function WhyUs() {
           </span>
           <h2 className="mt-4 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
             Tecnologia que protege.{" "}
-            <span className="text-brand-gradient">Segurança que você confia.</span>
+            <span className="text-primary">Segurança que você confia.</span>
           </h2>
 
           <ul className="mt-10 space-y-7">
