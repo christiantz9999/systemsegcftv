@@ -56,6 +56,7 @@ function Index() {
         <Services />
         <WhyUs />
         <ProductsCta />
+        <Testimonials />
         <ContactForm />
       </main>
       <Footer />
