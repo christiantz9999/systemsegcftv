@@ -4,6 +4,7 @@ import { Hero } from "@/components/landing/Hero";
 import { Services } from "@/components/landing/Services";
 import { WhyUs } from "@/components/landing/WhyUs";
 import { ProductsCta } from "@/components/landing/ProductsCta";
+import { Testimonials } from "@/components/landing/Testimonials";
 import { ContactForm } from "@/components/landing/ContactForm";
 import { Footer } from "@/components/landing/Footer";
 import { WhatsAppFloat } from "@/components/landing/WhatsAppFloat";
@@ -55,6 +56,7 @@ function Index() {
         <Services />
         <WhyUs />
         <ProductsCta />
+        <Testimonials />
         <ContactForm />
       </main>
       <Footer />
