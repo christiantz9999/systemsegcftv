@@ -60,6 +60,7 @@
 }
 
 :root {
+  color-scheme: dark;
   --radius: 0.75rem;
   --background: oklch(0.125 0.022 264);
   --foreground: oklch(0.96 0.008 250);
@@ -72,9 +73,9 @@
   --secondary: oklch(0.2 0.032 264);
   --secondary-foreground: oklch(0.96 0.008 250);
   --muted: oklch(0.2 0.032 264);
-  --muted-foreground: oklch(0.72 0.02 256);
-  --accent: oklch(0.58 0.21 262);
-  --accent-foreground: oklch(0.985 0.005 250);
+  --muted-foreground: oklch(0.77 0.02 256);
+  --accent: oklch(0.75 0.12 262);
+  --accent-foreground: oklch(0.15 0.03 264);
   --destructive: oklch(0.6 0.22 25);
   --destructive-foreground: oklch(0.985 0.005 250);
   --border: oklch(1 0 0 / 12%);
@@ -107,9 +108,9 @@
   --secondary: oklch(0.2 0.032 264);
   --secondary-foreground: oklch(0.96 0.008 250);
   --muted: oklch(0.2 0.032 264);
-  --muted-foreground: oklch(0.72 0.02 256);
-  --accent: oklch(0.58 0.21 262);
-  --accent-foreground: oklch(0.985 0.005 250);
+  --muted-foreground: oklch(0.77 0.02 256);
+  --accent: oklch(0.75 0.12 262);
+  --accent-foreground: oklch(0.15 0.03 264);
   --destructive: oklch(0.6 0.22 25);
   --destructive-foreground: oklch(0.985 0.005 250);
   --border: oklch(1 0 0 / 12%);
