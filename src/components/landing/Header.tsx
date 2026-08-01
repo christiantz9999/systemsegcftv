@@ -26,7 +26,7 @@ export function Header() {
           <div className="flex flex-col">
             <span className="font-display text-xl font-extrabold tracking-tight">
               <span className="text-primary">System</span>
-              <span className="text-accent">Seg</span>
+              <span className="text-logo-blue">Seg</span>
             </span>
             <span className="mt-0.5 text-[9px] font-semibold tracking-[0.32em] text-muted-foreground">
               SEGURANÇA ELETRÔNICA
