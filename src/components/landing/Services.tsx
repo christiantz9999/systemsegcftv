@@ -99,7 +99,7 @@ export function Services() {
                 )}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-5 inline-flex items-center gap-1 text-sm font-bold text-primary transition-colors hover:text-accent"
+                className="mt-5 inline-flex min-h-11 items-center gap-1 text-sm font-bold text-primary transition-colors hover:text-accent"
               >
                 Pedir orçamento
                 <ArrowUpRight className="size-4" aria-hidden />

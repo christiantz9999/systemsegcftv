@@ -47,7 +47,7 @@ export function Footer() {
               <li key={service}>
                 <a
                   href="#servicos"
-                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  className="block py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
                 >
                   {service}
                 </a>
@@ -66,7 +66,7 @@ export function Footer() {
                 href={DEFAULT_WHATSAPP_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                className="flex items-center gap-3 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
               >
                 <MessageCircle className="size-4 text-whatsapp" aria-hidden />
                 {WHATSAPP_DISPLAY}
@@ -77,7 +77,7 @@ export function Footer() {
                 href={INSTAGRAM_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                className="flex items-center gap-3 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
               >
                 <Instagram className="size-4 text-accent" aria-hidden />
                 {INSTAGRAM_HANDLE}
@@ -86,7 +86,7 @@ export function Footer() {
             <li>
               <a
                 href={`mailto:${EMAIL}`}
-                className="flex items-center gap-3 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                className="flex items-center gap-3 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
               >
                 <Mail className="size-4 text-primary" aria-hidden />
                 {EMAIL}

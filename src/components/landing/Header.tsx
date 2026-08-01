@@ -15,9 +15,9 @@ export function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <a href="#inicio" className="flex items-center gap-2.5 leading-none">
+        <a href="#inicio" className="flex items-center gap-2.5 py-1.5 leading-none">
           <img
             src={logoAsset.url}
             alt="Logomarca da SystemSeg – Segurança Eletrônica"
@@ -59,7 +59,7 @@ export function Header() {
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
-            className="inline-flex size-10 items-center justify-center rounded-lg border border-border text-foreground lg:hidden"
+            className="inline-flex size-11 items-center justify-center rounded-lg border border-border text-foreground lg:hidden"
             aria-label={open ? "Fechar menu" : "Abrir menu"}
             aria-expanded={open}
           >
