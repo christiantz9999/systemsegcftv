@@ -54,8 +54,8 @@ export function ProductsCta() {
             </div>
             <div className="relative">
               <img
-                src={cameraBullet}
-                alt="Câmera bullet de segurança instalada em parede"
+                src={cameraSpeedDome}
+                alt="Câmera Intelbras Speed Dome moderna em cenário cinematográfico de segurança"
                 width={1024}
                 height={768}
                 loading="lazy"
