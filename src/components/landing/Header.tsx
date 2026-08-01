@@ -20,7 +20,7 @@ export function Header() {
         <a href="#inicio" className="flex items-center gap-2.5 leading-none">
           <img
             src={logoAsset.url}
-            alt="SystemSeg"
+            alt="Logomarca da SystemSeg – Segurança Eletrônica"
             className="size-9 shrink-0 object-contain sm:size-10"
           />
           <div className="flex flex-col">
