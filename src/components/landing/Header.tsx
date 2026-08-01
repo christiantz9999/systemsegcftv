@@ -34,7 +34,7 @@ export function Header() {
           </div>
         </a>
 
-        <nav className="hidden items-center gap-8 md:flex" aria-label="Navegação principal">
+        <nav className="hidden items-center gap-8 lg:flex" aria-label="Navegação principal">
           {NAV_ITEMS.map((item) => (
             <a
               key={item.href}
@@ -51,7 +51,7 @@ export function Header() {
             href={DEFAULT_WHATSAPP_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground transition-all hover:brightness-110 sm:inline-flex"
+            className="hidden shrink-0 items-center gap-2 whitespace-nowrap rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground transition-all hover:brightness-110 sm:inline-flex"
           >
             <MessageCircle className="size-4" aria-hidden />
             Orçamento grátis
@@ -59,7 +59,7 @@ export function Header() {
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
-            className="inline-flex size-10 items-center justify-center rounded-lg border border-border text-foreground md:hidden"
+            className="inline-flex size-10 items-center justify-center rounded-lg border border-border text-foreground lg:hidden"
             aria-label={open ? "Fechar menu" : "Abrir menu"}
             aria-expanded={open}
           >
@@ -70,7 +70,7 @@ export function Header() {
 
       {open && (
         <nav
-          className="border-t border-border bg-background px-4 pb-6 pt-2 md:hidden"
+          className="border-t border-border bg-background px-4 pb-6 pt-2 lg:hidden"
           aria-label="Navegação móvel"
         >
           {NAV_ITEMS.map((item) => (
