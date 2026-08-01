@@ -13,7 +13,7 @@ const TESTIMONIALS = [
   {
     name: "Márcia Lopes",
     role: "Residencial",
-    city: "Ilhéus, BA",
+    city: "Santa Cruz Cabrália, BA",
     service: "Cerca Elétrica",
     rating: 5,
     text: "Ficamos muito mais seguros depois da cerca elétrica. A equipe veio no horário combinado, fez tudo limpo e ainda explicou como usar. Nota mil!",
@@ -22,7 +22,7 @@ const TESTIMONIALS = [
   {
     name: "Roberto Nascimento",
     role: "Condomínio Vale Verde",
-    city: "Itabuna, BA",
+    city: "Trancoso, BA",
     service: "Vídeo Porteiro",
     rating: 5,
     text: "Trocamos o interfone antigo por um vídeo porteiro com acesso pelo celular. Agora os moradores veem quem chega de onde estiverem. Ótimo investimento.",
@@ -31,7 +31,7 @@ const TESTIMONIALS = [
   {
     name: "Fernanda Souza",
     role: "Empresa",
-    city: "Buerarema, BA",
+    city: "Arraial d'Ajuda, BA",
     service: "Portão Automático",
     rating: 5,
     text: "O portão automático facilitou demais a entrada dos clientes e funcionários. A instalação foi rápida e o suporte sempre responde quando preciso.",
