@@ -21,7 +21,7 @@ const TESTIMONIALS = [
   },
   {
     name: "Roberto Nascimento",
-    role: "Condomínio Vale Verde",
+    role: "Condomínio",
     city: "Trancoso, BA",
     service: "Vídeo Porteiro",
     rating: 5,
