@@ -81,7 +81,7 @@ export function Hero() {
           />
           <img
             src={heroCamera}
-            alt="Câmera de segurança PTZ profissional SystemSeg"
+            alt="Câmera Intelbras PTZ profissional top de linha 2026"
             width={1024}
             height={1024}
             className="relative z-10 w-full drop-shadow-[0_40px_80px_rgba(0,0,0,0.6)]"
