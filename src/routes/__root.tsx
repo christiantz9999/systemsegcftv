@@ -94,15 +94,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "SystemSeg | Segurança Eletrônica" },
       { name: "twitter:description", content: "Soluções inteligentes em segurança eletrônica: CFTV, cercas elétricas, automação de portões, alarmes e mais. Orçamento pelo WhatsApp." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e0e4fcf0-3ba6-4bb6-987f-5b1fed3defc3/id-preview-2e3c791b--8e882c76-badf-47bc-9ad7-3c492c5f471f.lovable.app-1785591648618.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e0e4fcf0-3ba6-4bb6-987f-5b1fed3defc3/id-preview-2e3c791b--8e882c76-badf-47bc-9ad7-3c492c5f471f.lovable.app-1785591648618.png" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/8323e583-1557-4db5-a6af-70d566df92b5" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/8323e583-1557-4db5-a6af-70d566df92b5" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", type: "image/png", href: "/favicon.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
