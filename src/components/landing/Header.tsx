@@ -17,11 +17,11 @@ export function Header() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <a href="#inicio" className="flex items-center gap-2 leading-none">
+        <a href="#inicio" className="flex items-center gap-2.5 leading-none">
           <img
             src={logoAsset.url}
             alt="SystemSeg"
-            className="size-10 object-contain"
+            className="size-9 shrink-0 object-contain sm:size-10"
           />
           <div className="flex flex-col">
             <span className="font-display text-xl font-extrabold tracking-tight">
