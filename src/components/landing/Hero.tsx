@@ -30,7 +30,7 @@ export function Hero() {
 
           <h1 className="mt-6 font-display text-4xl font-extrabold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
             Proteja o que é seu com{" "}
-            <span className="text-brand-gradient">tecnologia e confiança</span>
+            <span className="text-primary">tecnologia e confiança</span>
           </h1>
 
           <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">

@@ -72,7 +72,7 @@ export function Services() {
           </span>
           <h2 className="mt-4 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
             Soluções inteligentes em segurança{" "}
-            <span className="text-brand-gradient">para você</span>
+            <span className="text-primary">para você</span>
           </h2>
           <p className="mt-4 text-muted-foreground">
             Do projeto à instalação, cuidamos de tudo. Escolha o serviço e peça

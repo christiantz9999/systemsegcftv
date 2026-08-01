@@ -63,7 +63,7 @@ export function Testimonials() {
           </span>
           <h2 className="mt-4 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
             O que nossos clientes dizem{" "}
-            <span className="text-brand-gradient">sobre a SystemSeg</span>
+            <span className="text-primary">sobre a SystemSeg</span>
           </h2>
           <p className="mt-4 text-muted-foreground">
             Histórias reais de quem já protegeu casa, comércio e empresa com a
@@ -82,7 +82,7 @@ export function Testimonials() {
                 “{testimonial.text}”
               </blockquote>
               <div className="mt-6 flex items-center gap-3">
-                <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-accent/20 font-display text-sm font-bold text-primary">
+                <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary/15 font-display text-sm font-bold text-primary">
                   {testimonial.initials}
                 </div>
                 <div className="min-w-0">
