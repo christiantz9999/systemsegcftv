@@ -4,7 +4,7 @@ const TESTIMONIALS = [
   {
     name: "Carlos Eduardo",
     role: "Comerciante",
-    city: "Itabuna, BA",
+    city: "Porto Seguro, BA",
     service: "CFTV e Alarme",
     rating: 5,
     text: "Instalei câmeras e alarme na minha loja e a diferença foi imediata. Qualidade de imagem excelente e o atendimento da SystemSeg é rápido. Recomendo de olhos fechados.",
