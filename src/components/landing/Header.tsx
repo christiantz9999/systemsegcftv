@@ -1,5 +1,6 @@
 import { Menu, MessageCircle, X } from "lucide-react";
 import { useState } from "react";
+import logoAsset from "@/assets/design-sem-nome.png.asset.json";
 import { DEFAULT_WHATSAPP_URL } from "@/lib/whatsapp";
 
 const NAV_ITEMS = [
