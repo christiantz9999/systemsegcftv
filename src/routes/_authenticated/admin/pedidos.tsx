@@ -92,7 +92,7 @@ function AdminOrders() {
       order_id: id,
       old_status: oldStatus,
       new_status: status,
-      changed_by: user?.id
+      changed_by: user?.id || null
     }])
 
     toast.success('Status atualizado')
