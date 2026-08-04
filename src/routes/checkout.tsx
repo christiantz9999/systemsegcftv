@@ -195,6 +195,23 @@ function CheckoutPage() {
               </pre>
             </div>
 
+            <div className="rounded-2xl border border-primary/20 bg-primary/5 p-6 space-y-3">
+              <div className="flex items-center gap-2 text-primary font-bold">
+                <Link2 className="size-5" />
+                <span>Guarde seu link de recuperação — Pedido {orderReference}</span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Se sair do WhatsApp antes de concluir, abra este link para recuperar seu carrinho e seus dados automaticamente.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Input readOnly value={recoveryLink} className="font-mono text-xs bg-background" onFocus={(e) => e.target.select()} />
+                <Button type="button" variant="outline" className="shrink-0 font-bold" onClick={handleCopyRecoveryLink}>
+                  <Copy className="mr-2 size-4" />
+                  Copiar link
+                </Button>
+              </div>
+            </div>
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
               <Button
                 size="lg"
