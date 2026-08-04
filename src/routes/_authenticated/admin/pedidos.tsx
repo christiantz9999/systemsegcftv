@@ -248,10 +248,10 @@ function AdminOrders() {
                             <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2 scrollbar-thin">
                               {loadingHistory[order.id] ? (
                                 <p className="text-xs text-muted-foreground italic">Carregando histórico...</p>
-                              ) : !history[order.id] || history[order.id].length === 0 ? (
+                              ) : !history[order.id] || (history[order.id] as any[]).length === 0 ? (
                                 <p className="text-xs text-muted-foreground italic">Nenhuma alteração registrada.</p>
                               ) : (
-                                history[order.id].map((h, i) => (
+                                (history[order.id] as any[]).map((h: any, i: number) => (
                                   <div key={i} className="text-xs border-l-2 border-primary/30 pl-3 py-0.5 space-y-1">
                                     <div className="flex justify-between items-start gap-2">
                                       <span className="font-bold text-foreground">
