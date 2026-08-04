@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ShoppingBag, CreditCard, ShieldCheck, CheckCircle2, Loader2, ChevronLeft } from "lucide-react";
+import { ShoppingBag, CreditCard, ShieldCheck, CheckCircle2, Loader2, ChevronLeft, MessageSquare, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { Link } from "@tanstack/react-router";
@@ -20,6 +20,8 @@ function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [whatsappLink, setWhatsappLink] = useState("");
+  const [whatsappMessage, setWhatsappMessage] = useState("");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -76,15 +78,13 @@ function CheckoutPage() {
         `*TOTAL: ${totalValueFormatted}*\n\n` +
         `_Aguardando confirmação de disponibilidade e pagamento._`;
 
-      const whatsappLink = buildWhatsAppUrl(message);
+      const link = buildWhatsAppUrl(message);
+      setWhatsappLink(link);
+      setWhatsappMessage(message);
       
       setIsSuccess(true);
       clearCart();
-      toast.success("Pedido enviado com sucesso!");
-      
-      setTimeout(() => {
-        window.open(whatsappLink, "_blank");
-      }, 2000);
+      toast.success("Pedido gerado com sucesso!");
     } catch (error) {
       toast.error("Erro ao processar pedido");
     } finally {
@@ -97,18 +97,35 @@ function CheckoutPage() {
       <div className="min-h-screen bg-background text-foreground">
         <Header />
         <main className="pt-32 pb-20 px-4">
-          <div className="max-w-2xl mx-auto text-center space-y-8 py-12 px-6 rounded-3xl bg-primary/5 border border-primary/10">
-            <div className="size-24 rounded-full bg-primary/20 flex items-center justify-center mx-auto">
-              <CheckCircle2 className="size-12 text-primary animate-bounce" />
-            </div>
-            <div className="space-y-4">
-              <h1 className="text-4xl font-bold font-display">Pedido Enviado!</h1>
-              <p className="text-lg text-muted-foreground">
-                Seu pedido foi processado e estamos redirecionando você para o WhatsApp da SystemSeg para finalizar os detalhes.
+          <div className="max-w-3xl mx-auto space-y-8">
+            <div className="text-center space-y-4 py-8 px-6 rounded-3xl bg-primary/5 border border-primary/10">
+              <div className="size-20 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
+                <CheckCircle2 className="size-10 text-primary animate-bounce" />
+              </div>
+              <h1 className="text-3xl font-bold font-display">Pedido Quase Pronto!</h1>
+              <p className="text-muted-foreground max-w-lg mx-auto">
+                Revisamos seu pedido. Clique no botão abaixo para abrir o WhatsApp e nos enviar a mensagem com seus dados.
               </p>
             </div>
-            <div className="pt-4">
-              <Button asChild variant="outline" className="font-bold">
+
+            <div className="rounded-2xl border border-border bg-secondary/20 p-6 space-y-4">
+              <div className="flex items-center gap-2 text-primary font-bold">
+                <MessageSquare className="size-5" />
+                <span>Prévia da Mensagem:</span>
+              </div>
+              <pre className="whitespace-pre-wrap font-mono text-sm bg-background p-6 rounded-xl border border-border leading-relaxed text-left overflow-x-auto">
+                {whatsappMessage}
+              </pre>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+              <Button asChild size="lg" className="font-bold py-8 px-10 text-lg rounded-xl shadow-xl shadow-primary/20">
+                <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
+                  Abrir WhatsApp Agora
+                  <ExternalLink className="ml-2 size-5" />
+                </a>
+              </Button>
+              <Button asChild variant="ghost" size="lg" className="font-bold">
                 <Link to="/">Voltar para Início</Link>
               </Button>
             </div>
