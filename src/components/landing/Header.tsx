@@ -1,8 +1,10 @@
 import { Menu, MessageCircle, X } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import logoAsset from "@/assets/logo-systemseg.png.asset.json";
 import { DEFAULT_WHATSAPP_URL } from "@/lib/whatsapp";
+import { supabase } from "@/integrations/supabase/client";
+
 
 const NAV_ITEMS = [
   { label: "Serviços", href: "#servicos" },
@@ -15,8 +17,6 @@ const NAV_ITEMS = [
 ];
 
 
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 
 export function Header() {
   const [open, setOpen] = useState(false);
