@@ -72,7 +72,8 @@ export function Auth() {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto bg-card border-border shadow-2xl">
+    <div className="space-y-4 w-full max-w-md mx-auto">
+      <Card className="bg-card border-border shadow-2xl">
       <CardHeader>
         <CardTitle className="text-2xl font-bold font-display">
           {isSignUp ? 'Criar Conta Admin' : 'Acesso Administrativo'}
@@ -133,6 +134,16 @@ export function Auth() {
           )}
         </CardFooter>
       </form>
-    </Card>
+      </Card>
+      
+      {isSignUp && (
+        <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 text-sm text-blue-200 text-center animate-in fade-in slide-in-from-bottom-2">
+          <p>
+            Após o cadastro, verifique sua caixa de entrada e spam. 
+            A confirmação pode levar alguns instantes para chegar.
+          </p>
+        </div>
+      )}
+    </div>
   )
 }
