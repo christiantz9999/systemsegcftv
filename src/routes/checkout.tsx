@@ -2,14 +2,24 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Header } from "@/components/landing/Header";
 import { Footer } from "@/components/landing/Footer";
 import { useCart, CartItem } from "@/lib/cart";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ShoppingBag, CreditCard, ShieldCheck, CheckCircle2, Loader2, ChevronLeft, MessageSquare, ExternalLink, Pencil } from "lucide-react";
+import { ShoppingBag, CreditCard, ShieldCheck, CheckCircle2, Loader2, ChevronLeft, MessageSquare, ExternalLink, Pencil, Copy, Link2 } from "lucide-react";
 import { toast } from "sonner";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
+import { supabase } from "@/integrations/supabase/client";
 import { Link } from "@tanstack/react-router";
+
+function generateOrderReference() {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let code = "";
+  for (let i = 0; i < 6; i++) {
+    code += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return `SS-${code}`;
+}
 
 export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
@@ -22,6 +32,8 @@ function CheckoutPage() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [whatsappLink, setWhatsappLink] = useState("");
   const [whatsappMessage, setWhatsappMessage] = useState("");
+  const [recoveryLink, setRecoveryLink] = useState("");
+  const [orderReference, setOrderReference] = useState("");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -30,6 +42,21 @@ function CheckoutPage() {
     city: "",
     zip: "",
   });
+
+  // Preenche o formulário quando o cliente veio da página de recuperação de pedido
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("checkout-recovery");
+      if (saved) {
+        const data = JSON.parse(saved);
+        setFormData((prev) => ({ ...prev, ...data }));
+        localStorage.removeItem("checkout-recovery");
+        toast.success("Dados do pedido restaurados!");
+      }
+    } catch {
+      // ignora dados inválidos
+    }
+  }, []);
 
   if (items.length === 0 && !isSuccess) {
     return (
