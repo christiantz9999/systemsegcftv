@@ -1,11 +1,12 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '@/integrations/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { toast } from 'sonner'
-import { Loader2 } from 'lucide-react'
+import { Loader2, AlertCircle, ShieldAlert } from 'lucide-react'
+import { useSearch } from '@tanstack/react-router'
 
 export function Auth() {
   const [isLoading, setIsLoading] = useState(false)
@@ -14,7 +15,18 @@ export function Auth() {
   const [password, setPassword] = useState('')
 
   const [resendingEmail, setResendingEmail] = useState(false)
-  const [emailStatus, setEmailStatus] = useState<'idle' | 'pending' | 'confirmed'>('idle')
+  const [emailStatus, setEmailStatus] = useState<'idle' | 'pending' | 'confirmed' | 'denied'>('idle')
+  const search = useSearch({ from: '/auth' }) as any
+  const [accessDenied, setAccessDenied] = useState(false)
+
+  useEffect(() => {
+    // Se vier de um redirecionamento forçado por falta de permissão admin
+    if (search.reason === 'unauthorized_admin') {
+      setAccessDenied(true)
+      setEmailStatus('denied')
+      toast.error('Acesso negado: Você não tem permissões de administrador.')
+    }
+  }, [search.reason])
 
   // Check if user is already logged in but maybe not confirmed (though Supabase usually handles this)
   // More importantly, when they enter email, we could potentially check, 
@@ -143,12 +155,24 @@ export function Auth() {
       </form>
       </Card>
       
-      { (isSignUp || emailStatus === 'pending') && (
-        <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 text-sm text-blue-200 text-center animate-in fade-in slide-in-from-bottom-2">
+      { (isSignUp || emailStatus === 'pending' || emailStatus === 'denied') && (
+        <div className={`rounded-lg p-4 text-sm text-center animate-in fade-in slide-in-from-bottom-2 border ${
+          emailStatus === 'denied' 
+            ? 'bg-destructive/10 border-destructive/20 text-destructive' 
+            : 'bg-blue-500/10 border-blue-500/20 text-blue-200'
+        }`}>
+          <div className="flex items-center justify-center gap-2 mb-1">
+            {emailStatus === 'denied' ? <ShieldAlert className="size-4" /> : <AlertCircle className="size-4" />}
+            <p className="font-bold">
+              {emailStatus === 'denied' ? 'Acesso Restrito' : 'Atenção'}
+            </p>
+          </div>
           <p>
-            {emailStatus === 'pending' 
-              ? `O e-mail ${email} ainda não foi confirmado. Verifique sua caixa de entrada e spam.`
-              : 'Após o cadastro, verifique sua caixa de entrada e spam. A confirmação pode levar alguns instantes para chegar.'}
+            {emailStatus === 'denied'
+              ? 'Sua conta não possui privilégios de administrador. Entre em contato com o suporte se isso for um erro.'
+              : emailStatus === 'pending' 
+                ? `O e-mail ${email} ainda não foi confirmado. Verifique sua caixa de entrada e spam.`
+                : 'Após o cadastro, verifique sua caixa de entrada e spam. A confirmação pode levar alguns instantes.'}
           </p>
         </div>
       )}
