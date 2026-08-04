@@ -127,11 +127,22 @@ function CheckoutPage() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Button asChild size="lg" className="font-bold py-8 px-10 text-lg rounded-xl shadow-xl shadow-primary/20">
-                <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
-                  Abrir WhatsApp Agora
-                  <ExternalLink className="ml-2 size-5" />
-                </a>
+              <Button
+                size="lg"
+                className="font-bold py-8 px-10 text-lg rounded-xl shadow-xl shadow-primary/20"
+                onClick={handleOpenWhatsApp}
+              >
+                Abrir WhatsApp Agora
+                <ExternalLink className="ml-2 size-5" />
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                className="font-bold"
+                onClick={handleEditData}
+              >
+                <Pencil className="mr-2 size-5" />
+                Editar meus dados
               </Button>
               <Button asChild variant="ghost" size="lg" className="font-bold">
                 <Link to="/">Voltar para Início</Link>
