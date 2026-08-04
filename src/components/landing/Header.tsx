@@ -28,10 +28,13 @@ export function Header() {
   const checkAdmin = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
-      const { data } = await supabase.rpc('has_role', {
+      const { data, error } = await supabase.rpc('has_role', {
         _user_id: session.user.id,
         _role: 'admin'
       });
+      if (error) {
+        console.error('Erro ao verificar admin no Header:', error);
+      }
       setIsAdmin(!!data);
     }
   };
