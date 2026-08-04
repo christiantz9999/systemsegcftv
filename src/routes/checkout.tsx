@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ShoppingBag, CreditCard, ShieldCheck, CheckCircle2, Loader2, ChevronLeft, MessageSquare, ExternalLink } from "lucide-react";
+import { ShoppingBag, CreditCard, ShieldCheck, CheckCircle2, Loader2, ChevronLeft, MessageSquare, ExternalLink, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { Link } from "@tanstack/react-router";
@@ -83,7 +83,6 @@ function CheckoutPage() {
       setWhatsappMessage(message);
       
       setIsSuccess(true);
-      clearCart();
       toast.success("Pedido gerado com sucesso!");
     } catch (error) {
       toast.error("Erro ao processar pedido");
