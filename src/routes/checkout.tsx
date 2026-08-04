@@ -93,7 +93,32 @@ function CheckoutPage() {
 
       const totalValueFormatted = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalPrice());
 
-      const message = `*NOVO PEDIDO - SYSTEMSEG*\n\n` +
+      // Salva o pedido no banco para permitir recuperação via link
+      const reference = generateOrderReference();
+      const { data: order, error: orderError } = await supabase
+        .from("orders")
+        .insert({
+          reference,
+          customer_name: formData.name,
+          customer_phone: formData.phone,
+          address: formData.address,
+          city: formData.city,
+          zip: formData.zip,
+          items: items.map((item: CartItem) => ({
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            image_url: item.image_url,
+            quantity: item.quantity,
+          })),
+          total: totalPrice(),
+        })
+        .select("id, reference")
+        .single();
+
+      if (orderError) throw orderError;
+
+      const message = `*NOVO PEDIDO ${reference} - SYSTEMSEG*\n\n` +
         `*CLIENTE:*\n` +
         `👤 ${formData.name}\n` +
         `📞 ${formData.phone}\n\n` +
@@ -108,13 +133,30 @@ function CheckoutPage() {
       const link = buildWhatsAppUrl(message);
       setWhatsappLink(link);
       setWhatsappMessage(message);
-      
+      setOrderReference(reference);
+      setRecoveryLink(`${window.location.origin}/pedido/${order.id}`);
+
       setIsSuccess(true);
       toast.success("Pedido gerado com sucesso!");
     } catch (error) {
       toast.error("Erro ao processar pedido");
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleCopyRecoveryLink = async () => {
+    try {
+      await navigator.clipboard.writeText(recoveryLink);
+      toast.success("Link de recuperação copiado!");
+    } catch {
+      const textarea = document.createElement("textarea");
+      textarea.value = recoveryLink;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+      toast.success("Link de recuperação copiado!");
     }
   };
 
