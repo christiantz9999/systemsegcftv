@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ShoppingBag, CreditCard, ShieldCheck, CheckCircle2, Loader2, ChevronLeft, MessageSquare, ExternalLink } from "lucide-react";
+import { ShoppingBag, CreditCard, ShieldCheck, CheckCircle2, Loader2, ChevronLeft, MessageSquare, ExternalLink, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { Link } from "@tanstack/react-router";
@@ -83,13 +83,21 @@ function CheckoutPage() {
       setWhatsappMessage(message);
       
       setIsSuccess(true);
-      clearCart();
       toast.success("Pedido gerado com sucesso!");
     } catch (error) {
       toast.error("Erro ao processar pedido");
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleOpenWhatsApp = () => {
+    clearCart();
+    window.open(whatsappLink, "_blank", "noopener,noreferrer");
+  };
+
+  const handleEditData = () => {
+    setIsSuccess(false);
   };
 
   if (isSuccess) {
@@ -119,11 +127,22 @@ function CheckoutPage() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Button asChild size="lg" className="font-bold py-8 px-10 text-lg rounded-xl shadow-xl shadow-primary/20">
-                <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
-                  Abrir WhatsApp Agora
-                  <ExternalLink className="ml-2 size-5" />
-                </a>
+              <Button
+                size="lg"
+                className="font-bold py-8 px-10 text-lg rounded-xl shadow-xl shadow-primary/20"
+                onClick={handleOpenWhatsApp}
+              >
+                Abrir WhatsApp Agora
+                <ExternalLink className="ml-2 size-5" />
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                className="font-bold"
+                onClick={handleEditData}
+              >
+                <Pencil className="mr-2 size-5" />
+                Editar meus dados
               </Button>
               <Button asChild variant="ghost" size="lg" className="font-bold">
                 <Link to="/">Voltar para Início</Link>
