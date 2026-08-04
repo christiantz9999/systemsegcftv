@@ -2,10 +2,16 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
 import { Header } from '@/components/landing/Header'
 import { Footer } from '@/components/landing/Footer'
-import { ChevronDown, ChevronUp, ShoppingCart, MapPin, User, CalendarClock, ExternalLink, History } from 'lucide-react'
+import { ChevronDown, ChevronUp, ShoppingCart, MapPin, User, CalendarClock, ExternalLink, History, Search, Calendar as CalendarIcon, X } from 'lucide-react'
 import { supabase } from '@/integrations/supabase/client'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
+import { Input } from '@/components/ui/input'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Calendar } from '@/components/ui/calendar'
+import { format } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
+import { cn } from '@/lib/utils'
 
 export const Route = createFileRoute('/_authenticated/admin/pedidos')({
   component: AdminOrders,
@@ -36,6 +42,9 @@ function AdminOrders() {
   const [isLoading, setIsLoading] = useState(true)
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [statusFilter, setStatusFilter] = useState<string>('all')
+  const [searchTerm, setSearchTerm] = useState('')
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined)
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined)
   const [history, setHistory] = useState<Record<string, any[]>>({})
   const [loadingHistory, setLoadingHistory] = useState<Record<string, boolean>>({})
 
@@ -111,9 +120,19 @@ function AdminOrders() {
   const formatPrice = (value: number) =>
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
 
-  const filteredOrders = statusFilter === 'all'
-    ? orders
-    : orders.filter((o) => o.status === statusFilter)
+  const filteredOrders = orders.filter((o) => {
+    const matchesStatus = statusFilter === 'all' || o.status === statusFilter
+    const matchesSearch = 
+      o.reference.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      o.customer_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      o.customer_phone.includes(searchTerm)
+    
+    const orderDate = new Date(o.created_at)
+    const matchesStartDate = !startDate || orderDate >= startDate
+    const matchesEndDate = !endDate || orderDate <= new Date(endDate.getTime() + 86400000)
+
+    return matchesStatus && matchesSearch && matchesStartDate && matchesEndDate
+  })
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -130,26 +149,103 @@ function AdminOrders() {
             </Button>
           </div>
 
-          <div className="flex flex-wrap gap-2 mb-6">
-            <Button
-              variant={statusFilter === 'all' ? 'default' : 'outline'}
-              size="sm"
-              className="font-bold"
-              onClick={() => setStatusFilter('all')}
-            >
-              Todos ({orders.length})
-            </Button>
-            {STATUS_OPTIONS.map((option) => (
+          <div className="bg-card border border-border rounded-2xl p-4 mb-8 space-y-4">
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                <Input
+                  placeholder="Buscar por referência, nome ou telefone..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-9"
+                />
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "justify-start text-left font-normal",
+                        !startDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {startDate ? format(startDate, "dd/MM/yyyy", { locale: ptBR }) : "Data início"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={startDate}
+                      onSelect={setStartDate}
+                      initialFocus
+                      locale={ptBR}
+                    />
+                  </PopoverContent>
+                </Popover>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "justify-start text-left font-normal",
+                        !endDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {endDate ? format(endDate, "dd/MM/yyyy", { locale: ptBR }) : "Data fim"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={endDate}
+                      onSelect={setEndDate}
+                      initialFocus
+                      locale={ptBR}
+                    />
+                  </PopoverContent>
+                </Popover>
+                {(searchTerm || startDate || endDate || statusFilter !== 'all') && (
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={() => {
+                      setSearchTerm('')
+                      setStartDate(undefined)
+                      setEndDate(undefined)
+                      setStatusFilter('all')
+                    }}
+                    title="Limpar filtros"
+                  >
+                    <X className="size-4" />
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-2 pt-2 border-t border-border">
               <Button
-                key={option.value}
-                variant={statusFilter === option.value ? 'default' : 'outline'}
+                variant={statusFilter === 'all' ? 'default' : 'outline'}
                 size="sm"
                 className="font-bold"
-                onClick={() => setStatusFilter(option.value)}
+                onClick={() => setStatusFilter('all')}
               >
-                {option.label} ({orders.filter((o) => o.status === option.value).length})
+                Todos ({orders.length})
               </Button>
-            ))}
+              {STATUS_OPTIONS.map((option) => (
+                <Button
+                  key={option.value}
+                  variant={statusFilter === option.value ? 'default' : 'outline'}
+                  size="sm"
+                  className="font-bold"
+                  onClick={() => setStatusFilter(option.value)}
+                >
+                  {option.label} ({orders.filter((o) => o.status === option.value).length})
+                </Button>
+              ))}
+            </div>
           </div>
 
           <div className="space-y-4">
