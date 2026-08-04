@@ -1,4 +1,6 @@
-import { Instagram, Mail, MessageCircle } from "lucide-react";
+import { Instagram, Mail, MessageCircle, Lock } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+
 import {
   DEFAULT_WHATSAPP_URL,
   EMAIL,
@@ -100,6 +102,11 @@ export function Footer() {
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 py-6 text-xs text-muted-foreground sm:flex-row sm:px-6 lg:px-8">
           <p>© {new Date().getFullYear()} SystemSeg Segurança Eletrônica. Todos os direitos reservados.</p>
           <p>{WEBSITE}</p>
+          <Link to="/auth" className="flex items-center gap-1 hover:text-primary transition-colors">
+            <Lock className="size-3" />
+            Admin
+          </Link>
+
         </div>
       </div>
     </footer>

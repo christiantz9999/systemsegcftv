@@ -1,8 +1,10 @@
 import { Menu, MessageCircle, X } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import logoAsset from "@/assets/logo-systemseg.png.asset.json";
 import { DEFAULT_WHATSAPP_URL } from "@/lib/whatsapp";
+import { supabase } from "@/integrations/supabase/client";
+
 
 const NAV_ITEMS = [
   { label: "Serviços", href: "#servicos" },
@@ -10,11 +12,31 @@ const NAV_ITEMS = [
   { label: "Equipamentos", href: "#equipamentos" },
   { label: "Depoimentos", href: "#depoimentos" },
   { label: "Loja", href: "/loja" },
+  { label: "Painel", href: "/admin", adminOnly: true },
   { label: "Contato", href: "#contato" },
 ];
 
+
+
 export function Header() {
   const [open, setOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    checkAdmin();
+  }, []);
+
+  const checkAdmin = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      const { data } = await supabase.rpc('has_role', {
+        _user_id: session.user.id,
+        _role: 'admin'
+      });
+      setIsAdmin(!!data);
+    }
+  };
+
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-xl">
@@ -37,7 +59,7 @@ export function Header() {
         </a>
 
         <nav className="hidden items-center gap-8 lg:flex" aria-label="Navegação principal">
-          {NAV_ITEMS.map((item) => (
+          {NAV_ITEMS.filter(item => !item.adminOnly || isAdmin).map((item) => (
             item.href.startsWith("/") ? (
               <Link
                 key={item.href}
@@ -85,7 +107,7 @@ export function Header() {
           className="border-t border-border bg-background px-4 pb-6 pt-2 lg:hidden"
           aria-label="Navegação móvel"
         >
-          {NAV_ITEMS.map((item) => (
+          {NAV_ITEMS.filter(item => !item.adminOnly || isAdmin).map((item) => (
             item.href.startsWith("/") ? (
               <Link
                 key={item.href}
