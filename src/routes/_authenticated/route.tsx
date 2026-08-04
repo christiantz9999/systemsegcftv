@@ -26,7 +26,11 @@ export const Route = createFileRoute('/_authenticated')({
       
       if (!isAdmin) {
         throw redirect({
-          to: '/',
+          to: '/auth',
+          search: {
+            reason: 'unauthorized_admin',
+            redirect: location.href,
+          }
         })
       }
     }
