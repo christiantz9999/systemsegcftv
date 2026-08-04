@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Header } from '@/components/landing/Header'
 import { Footer } from '@/components/landing/Footer'
-import { LayoutDashboard, Package, Tag, Settings, LogOut } from 'lucide-react'
+import { LayoutDashboard, Package, Tag, Settings, LogOut, ShoppingCart } from 'lucide-react'
 import { supabase } from '@/integrations/supabase/client'
 
 export const Route = createFileRoute('/_authenticated/admin/')({
@@ -43,6 +43,10 @@ function AdminDashboard() {
                 >
                   <Tag className="size-5" />
                   Categorias
+                </Link>
+                <Link to="/admin/pedidos" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/50 transition-colors text-muted-foreground hover:text-foreground">
+                  <ShoppingCart className="size-5" />
+                  Pedidos
                 </Link>
                 <button
                   onClick={handleLogout}

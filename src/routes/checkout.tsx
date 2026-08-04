@@ -2,14 +2,24 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Header } from "@/components/landing/Header";
 import { Footer } from "@/components/landing/Footer";
 import { useCart, CartItem } from "@/lib/cart";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ShoppingBag, CreditCard, ShieldCheck, CheckCircle2, Loader2, ChevronLeft, MessageSquare, ExternalLink, Pencil } from "lucide-react";
+import { ShoppingBag, CreditCard, ShieldCheck, CheckCircle2, Loader2, ChevronLeft, MessageSquare, ExternalLink, Pencil, Copy, Link2 } from "lucide-react";
 import { toast } from "sonner";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
+import { supabase } from "@/integrations/supabase/client";
 import { Link } from "@tanstack/react-router";
+
+function generateOrderReference() {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let code = "";
+  for (let i = 0; i < 6; i++) {
+    code += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return `SS-${code}`;
+}
 
 export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
@@ -22,6 +32,8 @@ function CheckoutPage() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [whatsappLink, setWhatsappLink] = useState("");
   const [whatsappMessage, setWhatsappMessage] = useState("");
+  const [recoveryLink, setRecoveryLink] = useState("");
+  const [orderReference, setOrderReference] = useState("");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -30,6 +42,21 @@ function CheckoutPage() {
     city: "",
     zip: "",
   });
+
+  // Preenche o formulário quando o cliente veio da página de recuperação de pedido
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("checkout-recovery");
+      if (saved) {
+        const data = JSON.parse(saved);
+        setFormData((prev) => ({ ...prev, ...data }));
+        localStorage.removeItem("checkout-recovery");
+        toast.success("Dados do pedido restaurados!");
+      }
+    } catch {
+      // ignora dados inválidos
+    }
+  }, []);
 
   if (items.length === 0 && !isSuccess) {
     return (
@@ -66,7 +93,32 @@ function CheckoutPage() {
 
       const totalValueFormatted = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalPrice());
 
-      const message = `*NOVO PEDIDO - SYSTEMSEG*\n\n` +
+      // Salva o pedido no banco para permitir recuperação via link
+      const reference = generateOrderReference();
+      const { data: order, error: orderError } = await supabase
+        .from("orders")
+        .insert({
+          reference,
+          customer_name: formData.name,
+          customer_phone: formData.phone,
+          address: formData.address,
+          city: formData.city,
+          zip: formData.zip,
+          items: items.map((item: CartItem) => ({
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            image_url: item.image_url,
+            quantity: item.quantity,
+          })),
+          total: totalPrice(),
+        })
+        .select("id, reference")
+        .single();
+
+      if (orderError) throw orderError;
+
+      const message = `*NOVO PEDIDO ${reference} - SYSTEMSEG*\n\n` +
         `*CLIENTE:*\n` +
         `👤 ${formData.name}\n` +
         `📞 ${formData.phone}\n\n` +
@@ -81,13 +133,30 @@ function CheckoutPage() {
       const link = buildWhatsAppUrl(message);
       setWhatsappLink(link);
       setWhatsappMessage(message);
-      
+      setOrderReference(reference);
+      setRecoveryLink(`${window.location.origin}/pedido/${order.id}`);
+
       setIsSuccess(true);
       toast.success("Pedido gerado com sucesso!");
     } catch (error) {
       toast.error("Erro ao processar pedido");
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleCopyRecoveryLink = async () => {
+    try {
+      await navigator.clipboard.writeText(recoveryLink);
+      toast.success("Link de recuperação copiado!");
+    } catch {
+      const textarea = document.createElement("textarea");
+      textarea.value = recoveryLink;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+      toast.success("Link de recuperação copiado!");
     }
   };
 
@@ -124,6 +193,23 @@ function CheckoutPage() {
               <pre className="whitespace-pre-wrap font-mono text-sm bg-background p-6 rounded-xl border border-border leading-relaxed text-left overflow-x-auto">
                 {whatsappMessage}
               </pre>
+            </div>
+
+            <div className="rounded-2xl border border-primary/20 bg-primary/5 p-6 space-y-3">
+              <div className="flex items-center gap-2 text-primary font-bold">
+                <Link2 className="size-5" />
+                <span>Guarde seu link de recuperação — Pedido {orderReference}</span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Se sair do WhatsApp antes de concluir, abra este link para recuperar seu carrinho e seus dados automaticamente.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Input readOnly value={recoveryLink} className="font-mono text-xs bg-background" onFocus={(e) => e.target.select()} />
+                <Button type="button" variant="outline" className="shrink-0 font-bold" onClick={handleCopyRecoveryLink}>
+                  <Copy className="mr-2 size-4" />
+                  Copiar link
+                </Button>
+              </div>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
