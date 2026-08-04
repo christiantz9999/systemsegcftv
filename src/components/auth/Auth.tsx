@@ -13,6 +13,8 @@ export function Auth() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
+  const [resendingEmail, setResendingEmail] = useState(false)
+
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
@@ -24,13 +26,20 @@ export function Auth() {
           password,
         })
         if (error) throw error
-        toast.success('Cadastro realizado! Verifique seu e-mail.')
+        toast.success('Cadastro realizado! Verifique seu e-mail para confirmar a conta.')
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         })
-        if (error) throw error
+        if (error) {
+          if (error.message.includes('Email not confirmed')) {
+            toast.error('E-mail não confirmado. Verifique sua caixa de entrada ou use o botão abaixo para reenviar.')
+          } else {
+            throw error
+          }
+          return
+        }
         toast.success('Login realizado com sucesso!')
         window.location.href = '/admin'
       }
@@ -38,6 +47,27 @@ export function Auth() {
       toast.error(error.message || 'Erro na autenticação')
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const handleResendEmail = async () => {
+    if (!email) {
+      toast.error('Por favor, insira seu e-mail primeiro.')
+      return
+    }
+    
+    setResendingEmail(true)
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: email,
+      })
+      if (error) throw error
+      toast.success('E-mail de confirmação reenviado!')
+    } catch (error: any) {
+      toast.error(error.message || 'Erro ao reenviar e-mail')
+    } finally {
+      setResendingEmail(false)
     }
   }
 
@@ -91,6 +121,16 @@ export function Auth() {
           >
             {isSignUp ? 'Já tem uma conta? Entre aqui' : 'Não tem conta? Crie uma'}
           </button>
+          {!isSignUp && (
+            <button
+              type="button"
+              onClick={handleResendEmail}
+              disabled={resendingEmail}
+              className="text-xs text-muted-foreground hover:text-primary transition-colors mt-2 underline underline-offset-4"
+            >
+              {resendingEmail ? 'Enviando...' : 'Reenviar e-mail de confirmação'}
+            </button>
+          )}
         </CardFooter>
       </form>
     </Card>
