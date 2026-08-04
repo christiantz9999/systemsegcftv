@@ -1,14 +1,14 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Header } from "@/components/landing/Header";
 import { Footer } from "@/components/landing/Footer";
-import { useCart } from "@/lib/cart";
+import { useCart, CartItem } from "@/lib/cart";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ShoppingBag, CreditCard, ShieldCheck, CheckCircle2, Loader2, ChevronLeft } from "lucide-react";
 import { toast } from "sonner";
-import { generateWhatsAppLink } from "@/lib/whatsapp";
+import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/checkout")({
@@ -193,7 +193,7 @@ function CheckoutPage() {
                           required 
                           className="bg-secondary/30"
                           value={formData.city}
-                          onChange={(prev) => setFormData(prev => ({ ...prev, city: prev.target.value }))}
+                          onChange={(e) => setFormData(prev => ({ ...prev, city: e.target.value }))}
                         />
                       </div>
                       <div className="space-y-2">
@@ -204,7 +204,7 @@ function CheckoutPage() {
                           className="bg-secondary/30"
                           placeholder="00000-000"
                           value={formData.zip}
-                          onChange={(prev) => setFormData(prev => ({ ...prev, zip: prev.target.value }))}
+                          onChange={(e) => setFormData(prev => ({ ...prev, zip: e.target.value }))}
                         />
                       </div>
                     </div>
@@ -228,7 +228,7 @@ function CheckoutPage() {
                 <h2 className="text-xl font-bold">Resumo do Pedido</h2>
                 
                 <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
-                  {items.map((item) => (
+                  {items.map((item: CartItem) => (
                     <div key={item.id} className="flex gap-4 items-center">
                       <div className="size-14 rounded-lg bg-secondary overflow-hidden shrink-0 border border-border">
                         {item.image_url ? (
