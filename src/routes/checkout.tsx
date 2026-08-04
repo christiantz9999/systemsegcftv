@@ -91,6 +91,15 @@ function CheckoutPage() {
     }
   };
 
+  const handleOpenWhatsApp = () => {
+    clearCart();
+    window.open(whatsappLink, "_blank", "noopener,noreferrer");
+  };
+
+  const handleEditData = () => {
+    setIsSuccess(false);
+  };
+
   if (isSuccess) {
     return (
       <div className="min-h-screen bg-background text-foreground">
