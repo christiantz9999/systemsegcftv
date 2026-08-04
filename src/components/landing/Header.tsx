@@ -1,4 +1,5 @@
 import { Menu, MessageCircle, X } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import logoAsset from "@/assets/logo-systemseg.png.asset.json";
 import { DEFAULT_WHATSAPP_URL } from "@/lib/whatsapp";
@@ -8,6 +9,7 @@ const NAV_ITEMS = [
   { label: "Diferenciais", href: "#diferenciais" },
   { label: "Equipamentos", href: "#equipamentos" },
   { label: "Depoimentos", href: "#depoimentos" },
+  { label: "Loja", href: "/loja" },
   { label: "Contato", href: "#contato" },
 ];
 
@@ -36,13 +38,23 @@ export function Header() {
 
         <nav className="hidden items-center gap-8 lg:flex" aria-label="Navegação principal">
           {NAV_ITEMS.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              {item.label}
-            </a>
+            item.href.startsWith("/") ? (
+              <Link
+                key={item.href}
+                to={item.href}
+                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              >
+                {item.label}
+              </Link>
+            ) : (
+              <a
+                key={item.href}
+                href={item.href}
+                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              >
+                {item.label}
+              </a>
+            )
           ))}
         </nav>
 
@@ -74,14 +86,25 @@ export function Header() {
           aria-label="Navegação móvel"
         >
           {NAV_ITEMS.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              onClick={() => setOpen(false)}
-              className="block rounded-lg px-3 py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-            >
-              {item.label}
-            </a>
+            item.href.startsWith("/") ? (
+              <Link
+                key={item.href}
+                to={item.href}
+                onClick={() => setOpen(false)}
+                className="block rounded-lg px-3 py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              >
+                {item.label}
+              </Link>
+            ) : (
+              <a
+                key={item.href}
+                href={item.href}
+                onClick={() => setOpen(false)}
+                className="block rounded-lg px-3 py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              >
+                {item.label}
+              </a>
+            )
           ))}
           <a
             href={DEFAULT_WHATSAPP_URL}
