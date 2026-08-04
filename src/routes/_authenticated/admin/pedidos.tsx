@@ -2,7 +2,7 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
 import { Header } from '@/components/landing/Header'
 import { Footer } from '@/components/landing/Footer'
-import { ChevronDown, ChevronUp, ShoppingCart, MapPin, User, CalendarClock, ExternalLink } from 'lucide-react'
+import { ChevronDown, ChevronUp, ShoppingCart, MapPin, User, CalendarClock, ExternalLink, History } from 'lucide-react'
 import { supabase } from '@/integrations/supabase/client'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
@@ -14,6 +14,9 @@ export const Route = createFileRoute('/_authenticated/admin/pedidos')({
 const STATUS_OPTIONS = [
   { value: 'pending', label: 'Aguardando contato' },
   { value: 'contacted', label: 'Em atendimento' },
+  { value: 'paid', label: 'Pago' },
+  { value: 'shipped', label: 'Enviado' },
+  { value: 'delivered', label: 'Entregue' },
   { value: 'completed', label: 'Concluído' },
   { value: 'cancelled', label: 'Cancelado' },
 ]
@@ -21,6 +24,9 @@ const STATUS_OPTIONS = [
 const STATUS_STYLES: Record<string, string> = {
   pending: 'bg-yellow-500/10 text-yellow-500',
   contacted: 'bg-primary/10 text-primary',
+  paid: 'bg-blue-500/10 text-blue-500',
+  shipped: 'bg-purple-500/10 text-purple-500',
+  delivered: 'bg-emerald-500/10 text-emerald-500',
   completed: 'bg-green-500/10 text-green-500',
   cancelled: 'bg-destructive/10 text-destructive',
 }
@@ -30,6 +36,8 @@ function AdminOrders() {
   const [isLoading, setIsLoading] = useState(true)
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [statusFilter, setStatusFilter] = useState<string>('all')
+  const [history, setHistory] = useState<Record<string, any[]>>({})
+  const [loadingHistory, setLoadingHistory] = useState<Record<string, boolean>>({})
 
   useEffect(() => {
     fetchOrders()
@@ -50,17 +58,53 @@ function AdminOrders() {
     setIsLoading(false)
   }
 
-  const handleStatusChange = async (id: string, status: string) => {
-    const { error } = await supabase
+  const fetchHistory = async (orderId: string) => {
+    setLoadingHistory(prev => ({ ...prev, [orderId]: true }))
+    const { data, error } = await supabase
+      .from('order_history')
+      .select('*')
+      .eq('order_id', orderId)
+      .order('created_at', { ascending: false })
+    
+    if (!error) {
+      setHistory(prev => ({ ...prev, [orderId]: data || [] }))
+    }
+    setLoadingHistory(prev => ({ ...prev, [orderId]: false }))
+  }
+
+  const handleStatusChange = async (id: string, status: string, oldStatus: string) => {
+    const { data: { user } } = await supabase.auth.getUser()
+    
+    // Inicia transação manual (Supabase JS não tem transações multi-tabela fáceis sem RPC, 
+    // então faremos em sequência)
+    const { error: updateError } = await supabase
       .from('orders')
       .update({ status })
       .eq('id', id)
 
-    if (error) {
+    if (updateError) {
       toast.error('Erro ao atualizar status')
-    } else {
-      toast.success('Status atualizado')
-      setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status } : o)))
+      return
+    }
+
+    // Grava histórico
+    await supabase.from('order_history').insert([{
+      order_id: id,
+      old_status: oldStatus,
+      new_status: status,
+      changed_by: user?.id || null
+    }])
+
+    toast.success('Status atualizado')
+    setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status } : o)))
+    fetchHistory(id)
+  }
+
+  const handleToggleExpand = (id: string) => {
+    const isExpanding = expandedId !== id
+    setExpandedId(isExpanding ? id : null)
+    if (isExpanding && !history[id]) {
+      fetchHistory(id)
     }
   }
 
@@ -127,7 +171,7 @@ function AdminOrders() {
                     <button
                       type="button"
                       className="w-full px-6 py-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 text-left hover:bg-secondary/20 transition-colors"
-                      onClick={() => setExpandedId(isExpanded ? null : order.id)}
+                      onClick={() => handleToggleExpand(order.id)}
                     >
                       <div className="flex-1 min-w-0">
                         <p className="font-bold font-display">{order.reference}</p>
@@ -154,7 +198,7 @@ function AdminOrders() {
 
                     {isExpanded && (
                       <div className="px-6 pb-6 pt-2 border-t border-border space-y-4">
-                        <div className="grid gap-4 md:grid-cols-2">
+                        <div className="grid gap-6 md:grid-cols-3">
                           <div className="space-y-2">
                             <h3 className="font-bold flex items-center gap-2 text-sm">
                               <User className="size-4 text-primary" />
@@ -193,8 +237,38 @@ function AdminOrders() {
                               <span>Total</span>
                               <span className="text-primary">{formatPrice(order.total)}</span>
                             </div>
+                            </div>
                           </div>
-                        </div>
+                          
+                          <div className="space-y-2">
+                            <h3 className="font-bold flex items-center gap-2 text-sm">
+                              <History className="size-4 text-primary" />
+                              Histórico
+                            </h3>
+                            <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2 scrollbar-thin">
+                              {loadingHistory[order.id] ? (
+                                <p className="text-xs text-muted-foreground italic">Carregando histórico...</p>
+                              ) : !history[order.id] || (history[order.id] as any[]).length === 0 ? (
+                                <p className="text-xs text-muted-foreground italic">Nenhuma alteração registrada.</p>
+                              ) : (
+                                (history[order.id] as any[]).map((h: any, i: number) => (
+                                  <div key={i} className="text-xs border-l-2 border-primary/30 pl-3 py-0.5 space-y-1">
+                                    <div className="flex justify-between items-start gap-2">
+                                      <span className="font-bold text-foreground">
+                                        {STATUS_OPTIONS.find(s => s.value === h.new_status)?.label || h.new_status}
+                                      </span>
+                                      <span className="text-[10px] text-muted-foreground whitespace-nowrap">
+                                        {new Date(h.created_at).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                                      </span>
+                                    </div>
+                                    <p className="text-muted-foreground">
+                                      {h.old_status ? `De: ${STATUS_OPTIONS.find(s => s.value === h.old_status)?.label || h.old_status}` : 'Novo pedido'}
+                                    </p>
+                                  </div>
+                                ))
+                              )}
+                            </div>
+                          </div>
 
                         <div className="flex flex-wrap items-center gap-2 pt-2">
                           <span className="text-sm font-bold mr-2">Alterar status:</span>
@@ -205,7 +279,7 @@ function AdminOrders() {
                               size="sm"
                               className="font-bold"
                               disabled={order.status === option.value}
-                              onClick={() => handleStatusChange(order.id, option.value)}
+                              onClick={() => handleStatusChange(order.id, option.value, order.status)}
                             >
                               {option.label}
                             </Button>
