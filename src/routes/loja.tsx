@@ -1,10 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/landing/Header";
 import { Footer } from "@/components/landing/Footer";
-import { ShoppingBag, ChevronRight, Package, CreditCard, ShieldCheck, Loader2 } from "lucide-react";
+import { ShoppingBag, ChevronRight, Package, CreditCard, ShieldCheck, Loader2, PlusCircle } from "lucide-react";
 import { DEFAULT_WHATSAPP_URL } from "@/lib/whatsapp";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
+import { useCart } from "@/lib/cart";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/loja")({
   head: () => ({
@@ -20,7 +23,8 @@ function ShopPage() {
   const [products, setProducts] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const { addItem } = useCart();
 
   useEffect(() => {
     fetchData();
@@ -173,13 +177,25 @@ function ShopPage() {
                           <span className="font-display text-xl font-extrabold text-primary">
                             {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.price)}
                           </span>
-                          <a 
-                            href={`${DEFAULT_WHATSAPP_URL}&text=Olá! Tenho interesse no produto: ${product.name}`}
-                            className="rounded-lg bg-secondary p-2 text-foreground hover:bg-primary hover:text-primary-foreground transition-all"
-                            title="Comprar via WhatsApp"
-                          >
-                            <ShoppingBag className="size-5" />
-                          </a>
+                           <div className="flex gap-2">
+                            <button 
+                              onClick={() => {
+                                addItem(product);
+                                toast.success(`${product.name} adicionado ao carrinho!`);
+                              }}
+                              className="rounded-lg bg-primary p-2 text-primary-foreground hover:scale-110 transition-all shadow-lg shadow-primary/20"
+                              title="Adicionar ao carrinho"
+                            >
+                              <PlusCircle className="size-5" />
+                            </button>
+                            <a 
+                              href={`${DEFAULT_WHATSAPP_URL}&text=Olá! Tenho interesse no produto: ${product.name}`}
+                              className="rounded-lg bg-secondary p-2 text-foreground hover:bg-primary hover:text-primary-foreground transition-all"
+                              title="Comprar via WhatsApp"
+                            >
+                              <ShoppingBag className="size-5" />
+                            </a>
+                          </div>
                         </div>
                       </div>
                     </div>

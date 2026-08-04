@@ -52,17 +52,17 @@ function CheckoutPage() {
     );
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
       // Format items for WhatsApp
       const itemsList = items
-        .map((item) => `- ${item.quantity}x ${item.name} (${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(item.price)})`)
+        .map((item: CartItem) => `- ${item.quantity}x ${item.name} (${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(item.price)})`)
         .join("\n");
 
-      const total = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalPrice());
+      const totalValueFormatted = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalPrice());
 
       const message = `*NOVO PEDIDO - SYSTEMSEG*\n\n` +
         `*CLIENTE:*\n` +
@@ -73,12 +73,11 @@ function CheckoutPage() {
         `📮 CEP: ${formData.zip}\n\n` +
         `*PRODUTOS:*\n` +
         `${itemsList}\n\n` +
-        `*TOTAL: ${total}*\n\n` +
+        `*TOTAL: ${totalValueFormatted}*\n\n` +
         `_Aguardando confirmação de disponibilidade e pagamento._`;
 
-      const whatsappLink = generateWhatsAppLink(message);
+      const whatsappLink = buildWhatsAppUrl(message);
       
-      // We'll simulate success first, then redirect
       setIsSuccess(true);
       clearCart();
       toast.success("Pedido enviado com sucesso!");

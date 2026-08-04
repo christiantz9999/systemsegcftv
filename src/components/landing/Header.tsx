@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import logoAsset from "@/assets/logo-systemseg.png.asset.json";
 import { DEFAULT_WHATSAPP_URL } from "@/lib/whatsapp";
 import { supabase } from "@/integrations/supabase/client";
+import { CartDrawer } from "@/components/cart/CartDrawer";
 
 
 const NAV_ITEMS = [
@@ -80,7 +81,9 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
+         <div className="flex items-center gap-2 lg:gap-4">
+          <CartDrawer />
+          <div className="flex items-center gap-2">
           <a
             href={DEFAULT_WHATSAPP_URL}
             target="_blank"
