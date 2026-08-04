@@ -151,7 +151,7 @@ export function Auth() {
               {resendingEmail ? 'Enviando...' : 'Reenviar e-mail de confirmação'}
             </button>
           )}
-          )}
+
           <a
             href="https://wa.me/5573991969419?text=Ol%C3%A1!%20Estou%20com%20problemas%20para%20acessar%20o%20painel%20administrativo%20da%20SystemSeg."
             target="_blank"
