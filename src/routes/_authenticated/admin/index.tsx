@@ -4,7 +4,7 @@ import { Footer } from '@/components/landing/Footer'
 import { LayoutDashboard, Package, Tag, Settings, LogOut } from 'lucide-react'
 import { supabase } from '@/integrations/supabase/client'
 
-export const Route = createFileRoute('/_authenticated/admin/index')({
+export const Route = createFileRoute('/_authenticated/admin/')({
   component: AdminDashboard,
 })
 
