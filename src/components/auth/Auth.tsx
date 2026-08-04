@@ -151,6 +151,16 @@ export function Auth() {
               {resendingEmail ? 'Enviando...' : 'Reenviar e-mail de confirmação'}
             </button>
           )}
+
+          <a
+            href="https://wa.me/5573991969419?text=Ol%C3%A1!%20Estou%20com%20problemas%20para%20acessar%20o%20painel%20administrativo%20da%20SystemSeg."
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-primary hover:underline mt-4 font-medium flex items-center gap-2"
+          >
+            <AlertCircle className="size-3" />
+            Não consigo efetuar o login
+          </a>
         </CardFooter>
       </form>
       </Card>
