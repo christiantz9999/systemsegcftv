@@ -58,11 +58,12 @@ function EditProductPage() {
         description: prodData.description || '',
         price: prodData.price.toString(),
         category_id: prodData.category_id || '',
-        stock_quantity: prodData.stock_quantity.toString(),
+        stock_quantity: (prodData.stock_quantity ?? 0).toString(),
         image_url: prodData.image_url || '',
-        is_active: prodData.is_active
+        is_active: !!prodData.is_active
       })
     }
+
     setIsFetching(false)
   }
 
