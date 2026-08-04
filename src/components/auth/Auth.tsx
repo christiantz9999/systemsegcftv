@@ -14,6 +14,12 @@ export function Auth() {
   const [password, setPassword] = useState('')
 
   const [resendingEmail, setResendingEmail] = useState(false)
+  const [emailStatus, setEmailStatus] = useState<'idle' | 'pending' | 'confirmed'>('idle')
+
+  // Check if user is already logged in but maybe not confirmed (though Supabase usually handles this)
+  // More importantly, when they enter email, we could potentially check, 
+  // but Supabase doesn't expose a public "isEmailConfirmed" for any random email for privacy.
+  // However, we can improve the UI to respond to the "Email not confirmed" error more dynamically.
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -34,6 +40,7 @@ export function Auth() {
         })
         if (error) {
           if (error.message.includes('Email not confirmed')) {
+            setEmailStatus('pending')
             toast.error('E-mail não confirmado. Verifique sua caixa de entrada ou use o botão abaixo para reenviar.')
           } else {
             throw error
@@ -136,11 +143,12 @@ export function Auth() {
       </form>
       </Card>
       
-      {isSignUp && (
+      { (isSignUp || emailStatus === 'pending') && (
         <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 text-sm text-blue-200 text-center animate-in fade-in slide-in-from-bottom-2">
           <p>
-            Após o cadastro, verifique sua caixa de entrada e spam. 
-            A confirmação pode levar alguns instantes para chegar.
+            {emailStatus === 'pending' 
+              ? `O e-mail ${email} ainda não foi confirmado. Verifique sua caixa de entrada e spam.`
+              : 'Após o cadastro, verifique sua caixa de entrada e spam. A confirmação pode levar alguns instantes para chegar.'}
           </p>
         </div>
       )}
