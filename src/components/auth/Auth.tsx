@@ -133,6 +133,7 @@ export function Auth() {
             </button>
           )}
         </CardFooter>
+      </form>
       </Card>
       
       {isSignUp && (
@@ -144,3 +145,5 @@ export function Auth() {
         </div>
       )}
     </div>
+  )
+}
