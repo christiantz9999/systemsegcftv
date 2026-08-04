@@ -44,6 +44,10 @@ function AdminDashboard() {
                   <Tag className="size-5" />
                   Categorias
                 </Link>
+                <Link to="/admin/pedidos" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/50 transition-colors text-muted-foreground hover:text-foreground">
+                  <ShoppingCart className="size-5" />
+                  Pedidos
+                </Link>
                 <button
                   onClick={handleLogout}
                   className="flex w-full items-center gap-3 px-4 py-3 rounded-xl hover:bg-destructive/10 hover:text-destructive transition-all text-left"
