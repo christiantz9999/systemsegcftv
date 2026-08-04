@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import logoAsset from "@/assets/logo-systemseg.png.asset.json";
 import { DEFAULT_WHATSAPP_URL } from "@/lib/whatsapp";
 import { supabase } from "@/integrations/supabase/client";
+import { CartDrawer } from "@/components/cart/CartDrawer";
 
 
 const NAV_ITEMS = [
@@ -80,25 +81,28 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
-          <a
-            href={DEFAULT_WHATSAPP_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden shrink-0 items-center gap-2 whitespace-nowrap rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground transition-all hover:brightness-110 sm:inline-flex"
-          >
-            <MessageCircle className="size-4" aria-hidden />
-            Orçamento grátis
-          </a>
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            className="inline-flex size-11 items-center justify-center rounded-lg border border-border text-foreground lg:hidden"
-            aria-label={open ? "Fechar menu" : "Abrir menu"}
-            aria-expanded={open}
-          >
-            {open ? <X className="size-5" /> : <Menu className="size-5" />}
-          </button>
+        <div className="flex items-center gap-2 lg:gap-4">
+          <CartDrawer />
+          <div className="flex items-center gap-2">
+            <a
+              href={DEFAULT_WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden shrink-0 items-center gap-2 whitespace-nowrap rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground transition-all hover:brightness-110 sm:inline-flex"
+            >
+              <MessageCircle className="size-4" aria-hidden />
+              Orçamento grátis
+            </a>
+            <button
+              type="button"
+              onClick={() => setOpen((v) => !v)}
+              className="inline-flex size-11 items-center justify-center rounded-lg border border-border text-foreground lg:hidden"
+              aria-label={open ? "Fechar menu" : "Abrir menu"}
+              aria-expanded={open}
+            >
+              {open ? <X className="size-5" /> : <Menu className="size-5" />}
+            </button>
+          </div>
         </div>
       </div>
 
