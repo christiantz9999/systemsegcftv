@@ -10,7 +10,7 @@ import { Loader2, Lock } from 'lucide-react'
 import { Header } from '@/components/landing/Header'
 import { Footer } from '@/components/landing/Footer'
 
-export const Route = createFileRoute('/auth/reset-password' as any)({
+export const Route = createFileRoute('/auth/reset-password')({
   component: ResetPasswordPage,
 })
 
