@@ -147,13 +147,11 @@ function AdminProducts() {
                             <Button 
                               variant="ghost" 
                               size="icon" 
-                              onClick={() => {
-                                console.log('Navigating to product:', product.id);
-                                navigate({ 
-                                  to: "/admin/produtos/$productId", 
-                                  params: { productId: product.id } 
-                                });
-                              }}
+                              onClick={() => navigate({ 
+                                to: "/admin/produtos/$productId", 
+                                params: { productId: product.id } 
+                              })}
+                              className="cursor-pointer hover:bg-secondary/50"
                             >
                               <Pencil className="size-4" />
                             </Button>
