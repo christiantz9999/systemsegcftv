@@ -18,8 +18,13 @@ export function Auth() {
   const [emailStatus, setEmailStatus] = useState<'idle' | 'pending' | 'confirmed' | 'denied' | 'error'>('idle')
   const search = useSearch({ from: '/auth' }) as any
   const [accessDenied, setAccessDenied] = useState(false)
+  const [currentUser, setCurrentUser] = useState<any>(null)
 
   useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      setCurrentUser(data.user)
+    })
+
     // Se vier de um redirecionamento forçado por falta de permissão admin
     if (search.reason === 'unauthorized_admin') {
       setAccessDenied(true)
@@ -94,6 +99,26 @@ export function Auth() {
 
   return (
     <div className="space-y-4 w-full max-w-md mx-auto">
+      {currentUser && (
+        <div className="bg-secondary/50 border border-border rounded-lg p-4 mb-4 flex flex-col gap-2">
+          <p className="text-sm text-muted-foreground">Logado como: <span className="text-foreground font-bold">{currentUser.email}</span></p>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => {
+              supabase.auth.signOut().then(() => {
+                setCurrentUser(null)
+                setEmailStatus('idle')
+                toast.success('Deslogado com sucesso')
+              })
+            }}>
+              Sair desta conta
+            </Button>
+            <Button size="sm" onClick={() => window.location.href = '/admin/'}>
+              Tentar acessar Painel
+            </Button>
+          </div>
+        </div>
+      )}
+
       <Card className="bg-card border-border shadow-2xl">
       <CardHeader>
         <CardTitle className="text-2xl font-bold font-display">
