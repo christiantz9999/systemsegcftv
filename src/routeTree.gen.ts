@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as LojaRouteImport } from './routes/loja'
+import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-password'
 import { Route as PedidoOrderIdRouteImport } from './routes/pedido.$orderId'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as AuthenticatedAdminCategoriasRouteImport } from './routes/_authenticated/admin/categorias'
@@ -45,6 +46,11 @@ const LojaRoute = LojaRouteImport.update({
   id: '/loja',
   path: '/loja',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => AuthRoute,
 } as any)
 const PedidoOrderIdRoute = PedidoOrderIdRouteImport.update({
   id: '/pedido/$orderId',
@@ -89,9 +95,10 @@ const AuthenticatedAdminProdutosNovoRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/checkout': typeof CheckoutRoute
   '/loja': typeof LojaRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
   '/pedido/$orderId': typeof PedidoOrderIdRoute
   '/admin/categorias': typeof AuthenticatedAdminCategoriasRoute
   '/admin/pedidos': typeof AuthenticatedAdminPedidosRoute
@@ -102,9 +109,10 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/checkout': typeof CheckoutRoute
   '/loja': typeof LojaRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
   '/pedido/$orderId': typeof PedidoOrderIdRoute
   '/admin/categorias': typeof AuthenticatedAdminCategoriasRoute
   '/admin/pedidos': typeof AuthenticatedAdminPedidosRoute
@@ -117,9 +125,10 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/checkout': typeof CheckoutRoute
   '/loja': typeof LojaRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
   '/pedido/$orderId': typeof PedidoOrderIdRoute
   '/_authenticated/admin/categorias': typeof AuthenticatedAdminCategoriasRoute
   '/_authenticated/admin/pedidos': typeof AuthenticatedAdminPedidosRoute
@@ -135,6 +144,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/checkout'
     | '/loja'
+    | '/auth/reset-password'
     | '/pedido/$orderId'
     | '/admin/categorias'
     | '/admin/pedidos'
@@ -148,6 +158,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/checkout'
     | '/loja'
+    | '/auth/reset-password'
     | '/pedido/$orderId'
     | '/admin/categorias'
     | '/admin/pedidos'
@@ -162,6 +173,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/checkout'
     | '/loja'
+    | '/auth/reset-password'
     | '/pedido/$orderId'
     | '/_authenticated/admin/categorias'
     | '/_authenticated/admin/pedidos'
@@ -174,7 +186,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthRoute: typeof AuthRoute
+  AuthRoute: typeof AuthRouteWithChildren
   CheckoutRoute: typeof CheckoutRoute
   LojaRoute: typeof LojaRoute
   PedidoOrderIdRoute: typeof PedidoOrderIdRoute
@@ -216,6 +228,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/loja'
       preLoaderRoute: typeof LojaRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/auth/reset-password': {
+      id: '/auth/reset-password'
+      path: '/reset-password'
+      fullPath: '/auth/reset-password'
+      preLoaderRoute: typeof AuthResetPasswordRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/pedido/$orderId': {
       id: '/pedido/$orderId'
@@ -303,10 +322,20 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface AuthRouteChildren {
+  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthResetPasswordRoute: AuthResetPasswordRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  AuthRoute: AuthRoute,
+  AuthRoute: AuthRouteWithChildren,
   CheckoutRoute: CheckoutRoute,
   LojaRoute: LojaRoute,
   PedidoOrderIdRoute: PedidoOrderIdRoute,
