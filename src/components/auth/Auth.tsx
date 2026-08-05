@@ -18,8 +18,13 @@ export function Auth() {
   const [emailStatus, setEmailStatus] = useState<'idle' | 'pending' | 'confirmed' | 'denied' | 'error'>('idle')
   const search = useSearch({ from: '/auth' }) as any
   const [accessDenied, setAccessDenied] = useState(false)
+  const [currentUser, setCurrentUser] = useState<any>(null)
 
   useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      setCurrentUser(data.user)
+    })
+
     // Se vier de um redirecionamento forçado por falta de permissão admin
     if (search.reason === 'unauthorized_admin') {
       setAccessDenied(true)
