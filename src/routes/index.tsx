@@ -50,15 +50,18 @@ export const Route = createFileRoute("/")({
 function Index() {
   return (
     <div className="min-h-screen bg-background font-sans text-foreground antialiased relative">
-      <div className="fixed bottom-4 right-4 z-[60] flex flex-col gap-2 pointer-events-none">
+      <div className="fixed bottom-4 right-4 z-[60] flex flex-col gap-2 pointer-events-none items-end">
         <a 
-          href="/auth" 
+          href="https://wa.me/5573991969419?text=Olá! Estou com problemas para acessar o painel administrativo da SystemSeg."
+          target="_blank"
+          rel="noopener noreferrer"
           className="bg-primary/90 hover:bg-primary text-primary-foreground px-4 py-2 rounded-full text-[10px] sm:text-xs font-bold shadow-lg backdrop-blur-sm transition-all flex items-center gap-2 border border-primary/20 pointer-events-auto"
         >
           <div className="size-2 bg-green-500 rounded-full animate-pulse" />
           Não consigo efetuar o login
         </a>
       </div>
+
       <Header />
       <main>
         <Hero />
