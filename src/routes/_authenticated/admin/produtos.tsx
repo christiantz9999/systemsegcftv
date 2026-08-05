@@ -149,7 +149,10 @@ function AdminProducts() {
                               size="icon" 
                               onClick={() => {
                                 console.log('Navigating to product:', product.id);
-                                window.location.href = `/admin/produtos/${product.id}`;
+                                navigate({ 
+                                  to: "/admin/produtos/$productId", 
+                                  params: { productId: product.id } 
+                                });
                               }}
                             >
                               <Pencil className="size-4" />
