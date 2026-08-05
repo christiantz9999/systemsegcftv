@@ -151,6 +151,7 @@ function AdminProducts() {
                                 to: "/admin/produtos/$productId", 
                                 params: { productId: product.id } 
                               })}
+                              className="cursor-pointer hover:bg-secondary/50"
                             >
                               <Pencil className="size-4" />
                             </Button>
