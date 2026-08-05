@@ -28,14 +28,24 @@ export function Header() {
   const checkAdmin = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
-      const { data, error } = await supabase.rpc('has_role', {
-        _user_id: session.user.id,
-        _role: 'admin'
-      });
-      if (error) {
-        console.error('Erro ao verificar admin no Header:', error);
+      try {
+        const { data, error } = await supabase.rpc('has_role', {
+          _user_id: session.user.id,
+          _role: 'admin'
+        }) as { data: boolean; error: any };
+        
+        if (error) {
+          console.error('Erro ao verificar admin no Header:', error);
+          setIsAdmin(false);
+        } else {
+          setIsAdmin(!!data);
+        }
+      } catch (e) {
+        console.error('Exception checking admin status:', e);
+        setIsAdmin(false);
       }
-      setIsAdmin(!!data);
+    } else {
+      setIsAdmin(false);
     }
   };
 
