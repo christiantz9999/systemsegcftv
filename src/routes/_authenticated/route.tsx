@@ -14,7 +14,7 @@ export const Route = createFileRoute('/_authenticated')({
     }
     
     // Check if user is admin for /admin routes
-    if (location.pathname.startsWith('/admin')) {
+    if (location.pathname.includes('/admin')) {
       const { data: isAdmin, error: rpcError } = await supabase.rpc('has_role', {
         _user_id: session.user.id,
         _role: 'admin'
