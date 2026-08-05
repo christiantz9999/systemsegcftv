@@ -50,7 +50,6 @@ export const Route = createFileRoute("/")({
 function Index() {
   return (
     <div className="min-h-screen bg-background font-sans text-foreground antialiased relative">
-
       <Header />
       <main>
         <Hero />
