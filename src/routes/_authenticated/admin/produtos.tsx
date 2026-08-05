@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
 import { Header } from '@/components/landing/Header'
 import { Footer } from '@/components/landing/Footer'
@@ -13,6 +13,7 @@ export const Route = createFileRoute('/_authenticated/admin/produtos')({
 })
 
 function AdminProducts() {
+  const navigate = useNavigate()
   const [products, setProducts] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
@@ -143,13 +144,15 @@ function AdminProducts() {
                         </td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex items-center justify-end gap-2">
-                            <Button variant="ghost" size="icon" asChild>
-                              <Link 
-                                to="/admin/produtos/$productId" 
-                                params={{ productId: product.id }}
-                              >
-                                <Pencil className="size-4" />
-                              </Link>
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              onClick={() => navigate({ 
+                                to: "/admin/produtos/$productId", 
+                                params: { productId: product.id } 
+                              })}
+                            >
+                              <Pencil className="size-4" />
                             </Button>
                             <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10" onClick={() => handleDelete(product.id)}>
                               <Trash2 className="size-4" />
