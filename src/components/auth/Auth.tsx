@@ -15,7 +15,7 @@ export function Auth() {
   const [password, setPassword] = useState('')
 
   const [resendingEmail, setResendingEmail] = useState(false)
-  const [emailStatus, setEmailStatus] = useState<'idle' | 'pending' | 'confirmed' | 'denied'>('idle')
+  const [emailStatus, setEmailStatus] = useState<'idle' | 'pending' | 'confirmed' | 'denied' | 'error'>('idle')
   const search = useSearch({ from: '/auth' }) as any
   const [accessDenied, setAccessDenied] = useState(false)
 
@@ -54,15 +54,15 @@ export function Auth() {
           if (error.message.includes('Email not confirmed')) {
             setEmailStatus('pending')
             toast.error('E-mail não confirmado. Verifique sua caixa de entrada ou use o botão abaixo para reenviar.')
-          } else {
+            setEmailStatus('error')
             throw error
-          }
           return
         }
         toast.success('Login realizado com sucesso!')
         window.location.href = '/admin/'
       }
     } catch (error: any) {
+      setEmailStatus('error')
       toast.error(error.message || 'Erro na autenticação')
     } finally {
       setIsLoading(false)
@@ -141,7 +141,15 @@ export function Auth() {
           >
             {isSignUp ? 'Já tem uma conta? Entre aqui' : 'Não tem conta? Crie uma'}
           </button>
-          {!isSignUp && (
+          
+          <a
+            href="/"
+            className="text-sm text-muted-foreground hover:text-primary transition-colors mt-2 flex items-center gap-1 justify-center"
+          >
+            Voltar ao site
+          </a>
+
+          {emailStatus === 'pending' && !isSignUp && (
             <button
               type="button"
               onClick={handleResendEmail}
@@ -179,15 +187,17 @@ export function Auth() {
           )}
 
 
-          <a
-            href="https://wa.me/5573991969419?text=Ol%C3%A1!%20Estou%20com%20problemas%20para%20acessar%20o%20painel%20administrativo%20da%20SystemSeg."
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs text-primary hover:underline mt-4 font-medium flex items-center gap-2"
-          >
-            <AlertCircle className="size-3" />
-            Não consigo efetuar o login
-          </a>
+          {emailStatus === 'error' && (
+            <a
+              href="https://wa.me/5573991969419?text=Ol%C3%A1!%20Estou%20com%20problemas%20para%20acessar%20o%20painel%20administrativo%20da%20SystemSeg."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-primary hover:underline mt-4 font-medium flex items-center gap-2 justify-center w-full"
+            >
+              <AlertCircle className="size-3" />
+              Não consigo efetuar o login
+            </a>
+          )}
         </CardFooter>
       </form>
       </Card>
