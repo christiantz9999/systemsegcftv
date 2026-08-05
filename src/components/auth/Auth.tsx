@@ -54,8 +54,10 @@ export function Auth() {
           if (error.message.includes('Email not confirmed')) {
             setEmailStatus('pending')
             toast.error('E-mail não confirmado. Verifique sua caixa de entrada ou use o botão abaixo para reenviar.')
+          } else {
             setEmailStatus('error')
             throw error
+          }
           return
         }
         toast.success('Login realizado com sucesso!')
