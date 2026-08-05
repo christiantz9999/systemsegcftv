@@ -35,6 +35,24 @@ export type Database = {
         }
         Relationships: []
       }
+      migration_logs: {
+        Row: {
+          created_at: string | null
+          id: number
+          message: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          message?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          message?: string | null
+        }
+        Relationships: []
+      }
       order_history: {
         Row: {
           changed_by: string | null
