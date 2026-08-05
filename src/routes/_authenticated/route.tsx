@@ -18,7 +18,7 @@ export const Route = createFileRoute('/_authenticated')({
       const { data: isAdmin, error: rpcError } = await supabase.rpc('has_role', {
         _user_id: session.user.id,
         _role: 'admin'
-      }).single()
+      }) as { data: boolean; error: any };
       
       if (rpcError) {
         console.error('Erro ao verificar permissões:', rpcError)
