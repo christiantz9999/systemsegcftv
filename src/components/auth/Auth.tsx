@@ -60,7 +60,7 @@ export function Auth() {
           return
         }
         toast.success('Login realizado com sucesso!')
-        window.location.href = '/admin'
+        window.location.href = '/admin/'
       }
     } catch (error: any) {
       toast.error(error.message || 'Erro na autenticação')

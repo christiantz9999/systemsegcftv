@@ -31,7 +31,7 @@ export function Header() {
       const { data, error } = await supabase.rpc('has_role', {
         _user_id: session.user.id,
         _role: 'admin'
-      });
+      }).single();
       if (error) {
         console.error('Erro ao verificar admin no Header:', error);
       }
