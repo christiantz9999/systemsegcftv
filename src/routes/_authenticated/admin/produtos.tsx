@@ -147,10 +147,10 @@ function AdminProducts() {
                             <Button 
                               variant="ghost" 
                               size="icon" 
-                              onClick={() => navigate({ 
-                                to: "/admin/produtos/$productId", 
-                                params: { productId: product.id } 
-                              })}
+                              onClick={() => {
+                                console.log('Navigating to product:', product.id);
+                                window.location.href = `/admin/produtos/${product.id}`;
+                              }}
                             >
                               <Pencil className="size-4" />
                             </Button>
