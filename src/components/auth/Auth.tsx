@@ -151,6 +151,33 @@ export function Auth() {
               {resendingEmail ? 'Enviando...' : 'Reenviar e-mail de confirmação'}
             </button>
           )}
+          {!isSignUp && (
+            <button
+              type="button"
+              onClick={async () => {
+                if (!email) {
+                  toast.error('Por favor, insira seu e-mail para recuperar a senha.')
+                  return
+                }
+                setIsLoading(true)
+                try {
+                  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                    redirectTo: `${window.location.origin}/auth/reset-password`,
+                  })
+                  if (error) throw error
+                  toast.success('Link de recuperação enviado para o seu e-mail!')
+                } catch (error: any) {
+                  toast.error(error.message || 'Erro ao enviar link de recuperação')
+                } finally {
+                  setIsLoading(false)
+                }
+              }}
+              className="text-xs text-muted-foreground hover:text-primary transition-colors mt-1 underline underline-offset-4"
+            >
+              Esqueci minha senha
+            </button>
+          )}
+
 
           <a
             href="https://wa.me/5573991969419?text=Ol%C3%A1!%20Estou%20com%20problemas%20para%20acessar%20o%20painel%20administrativo%20da%20SystemSeg."
