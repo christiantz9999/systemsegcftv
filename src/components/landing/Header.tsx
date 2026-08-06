@@ -9,6 +9,7 @@ import { CartDrawer } from "@/components/cart/CartDrawer";
 
 const NAV_ITEMS = [
   { label: "Serviços", href: "#servicos" },
+  { label: "Planos", href: "#precos" },
   { label: "Depoimentos", href: "#depoimentos" },
   { label: "Loja", href: "/loja" },
   { label: "Painel", href: "/admin", adminOnly: true },
