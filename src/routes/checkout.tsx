@@ -431,9 +431,14 @@ function CheckoutPage() {
             </div>
 
             <div className="lg:col-span-5">
-              <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-6 sticky top-24">
-                <h2 className="text-xl font-bold">Resumo do Pedido</h2>
-                
+              <div id="resumo-pedido" className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-6 sticky top-24 scroll-mt-24">
+                <div className="space-y-1">
+                  <h2 className="text-xl font-bold">Resumo do Pedido</h2>
+                  <p className="text-xs text-muted-foreground">
+                    Ajuste as quantidades ou remova itens antes de enviar.
+                  </p>
+                </div>
+
                 <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
                   {items.map((item: CartItem) => (
                     <div key={item.id} className="flex gap-4 items-center">
@@ -446,13 +451,45 @@ function CheckoutPage() {
                           </div>
                         )}
                       </div>
-                      <div className="flex-1 min-w-0">
+                      <div className="flex-1 min-w-0 space-y-1.5">
                         <h4 className="text-sm font-bold line-clamp-1">{item.name}</h4>
-                        <p className="text-xs text-muted-foreground">{item.quantity}x {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(item.price)}</p>
+                        <p className="text-xs text-muted-foreground">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(item.price)} cada</p>
+                        <div className="flex items-center rounded-lg border border-border bg-secondary/50 w-fit">
+                          <button
+                            type="button"
+                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            className="p-1.5 hover:text-primary transition-colors"
+                            aria-label={`Diminuir quantidade de ${item.name}`}
+                          >
+                            <Minus className="size-3.5" />
+                          </button>
+                          <span className="w-8 text-center text-xs font-bold">
+                            {item.quantity}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            className="p-1.5 hover:text-primary transition-colors"
+                            aria-label={`Aumentar quantidade de ${item.name}`}
+                          >
+                            <Plus className="size-3.5" />
+                          </button>
+                        </div>
                       </div>
-                      <span className="font-bold text-sm">
-                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(item.price * item.quantity)}
-                      </span>
+                      <div className="flex flex-col items-end justify-between self-stretch py-0.5">
+                        <button
+                          type="button"
+                          onClick={() => removeItem(item.id)}
+                          className="text-muted-foreground hover:text-destructive transition-colors"
+                          aria-label={`Remover ${item.name} do pedido`}
+                          title="Remover item"
+                        >
+                          <Trash2 className="size-4" />
+                        </button>
+                        <span className="font-bold text-sm">
+                          {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(item.price * item.quantity)}
+                        </span>
+                      </div>
                     </div>
                   ))}
                 </div>
