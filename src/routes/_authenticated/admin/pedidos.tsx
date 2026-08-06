@@ -329,8 +329,12 @@ function AdminOrders() {
                                 </div>
                               ))}
                             </div>
-                            <div className="flex justify-between font-bold pt-2 border-t border-border">
-                              <span>Total</span>
+                            <div className="flex justify-between text-sm text-muted-foreground pt-2 border-t border-border">
+                              <span>Frete</span>
+                              <span className="font-bold uppercase text-xs">A combinar</span>
+                            </div>
+                            <div className="flex justify-between font-bold">
+                              <span>Total dos produtos</span>
                               <span className="text-primary">{formatPrice(order.total)}</span>
                             </div>
                             </div>
