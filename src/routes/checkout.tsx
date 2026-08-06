@@ -256,6 +256,32 @@ function CheckoutPage() {
               </div>
             </div>
 
+            <div className="rounded-2xl border border-border bg-card p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="space-y-1 text-center sm:text-left">
+                <h3 className="font-bold flex items-center gap-2 justify-center sm:justify-start">
+                  <FileText className="size-5 text-primary" />
+                  Resumo do Pedido em PDF
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Baixe o resumo com seus dados, itens e valores para guardar ou conferir antes de enviar no WhatsApp.
+                </p>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                className="shrink-0 font-bold"
+                onClick={handleDownloadPdf}
+                disabled={isGeneratingPdf}
+              >
+                {isGeneratingPdf ? (
+                  <Loader2 className="mr-2 size-4 animate-spin" />
+                ) : (
+                  <Download className="mr-2 size-4" />
+                )}
+                Baixar PDF do Pedido
+              </Button>
+            </div>
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
               <Button
                 size="lg"
