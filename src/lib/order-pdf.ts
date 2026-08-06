@@ -32,7 +32,7 @@ const CONTENT_W = PAGE_W - MARGIN * 2;
 function formatBRL(value: number) {
   return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" })
     .format(value)
-    .replace(/[  ]/g, " ");
+    .replace(/[\u00A0\u202F]/g, " ");
 }
 
 async function loadLogoDataUrl(): Promise<string | null> {
@@ -73,7 +73,7 @@ export async function generateOrderPdf(data: OrderPdfData) {
     doc.text("SystemSeg", MARGIN + 24, 14);
     doc.setFontSize(9);
     doc.setFont("helvetica", "normal");
-    doc.text("Seguranca Eletronica - Cameras, Cercas e Automacao", MARGIN + 24, 20);
+    doc.text("Segurança Eletrônica - Câmeras, Cercas e Automação", MARGIN + 24, 20);
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(11);
@@ -100,7 +100,7 @@ export async function generateOrderPdf(data: OrderPdfData) {
       y,
       { align: "center" },
     );
-    doc.text(`Pagina ${pageNum}`, PAGE_W - MARGIN, y + 4, { align: "right" });
+    doc.text(`Página ${pageNum}`, PAGE_W - MARGIN, y + 4, { align: "right" });
   };
 
   const sectionTitle = (title: string, y: number) => {
@@ -145,8 +145,8 @@ export async function generateOrderPdf(data: OrderPdfData) {
   y += 2;
 
   // ---- Endereco ----
-  y = sectionTitle("ENDERECO DE ENTREGA", y);
-  y = bodyLine("Endereco:", `${data.address} - ${data.city}`, y);
+  y = sectionTitle("ENDEREÇO DE ENTREGA", y);
+  y = bodyLine("Endereço:", `${data.address} - ${data.city}`, y);
   y = bodyLine("CEP:", data.zip, y);
   y += 4;
 
@@ -167,7 +167,7 @@ export async function generateOrderPdf(data: OrderPdfData) {
     doc.setTextColor(...GRAY);
     doc.text("QTD", colQtd + 1, ty);
     doc.text("PRODUTO", colProd, ty);
-    doc.text("UNITARIO", colUnit, ty, { align: "right" });
+    doc.text("UNITÁRIO", colUnit, ty, { align: "right" });
     doc.text("SUBTOTAL", colSub, ty, { align: "right" });
     return ty + 6;
   };
@@ -253,7 +253,7 @@ export async function generateOrderPdf(data: OrderPdfData) {
   doc.setFont("helvetica", "italic");
   doc.setTextColor(...GRAY);
   const note = doc.splitTextToSize(
-    "O valor do frete sera calculado e somado ao total durante o atendimento no WhatsApp. Este documento e um resumo do pedido e nao possui valor fiscal.",
+    "O valor do frete será calculado e somado ao total durante o atendimento no WhatsApp. Este documento é um resumo do pedido e não possui valor fiscal.",
     CONTENT_W,
   );
   doc.text(note, MARGIN, y);
