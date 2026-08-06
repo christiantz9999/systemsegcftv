@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ShoppingBag, CreditCard, ShieldCheck, CheckCircle2, Loader2, ChevronLeft, MessageSquare, ExternalLink, Pencil, Copy, Link2, Download, FileText } from "lucide-react";
+import { ShoppingBag, CreditCard, ShieldCheck, CheckCircle2, Loader2, ChevronLeft, MessageSquare, ExternalLink, Pencil, Copy, Link2, Download, FileText, Minus, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { generateOrderPdf, OrderPdfData } from "@/lib/order-pdf";
@@ -28,7 +28,7 @@ export const Route = createFileRoute("/checkout")({
 
 function CheckoutPage() {
   const navigate = useNavigate();
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice, clearCart, updateQuantity, removeItem } = useCart();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [whatsappLink, setWhatsappLink] = useState("");
@@ -213,6 +213,13 @@ function CheckoutPage() {
     setIsSuccess(false);
   };
 
+  const handleEditItems = () => {
+    setIsSuccess(false);
+    setTimeout(() => {
+      document.getElementById("resumo-pedido")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
+  };
+
   if (isSuccess) {
     return (
       <div className="min-h-screen bg-background text-foreground">
@@ -299,6 +306,15 @@ function CheckoutPage() {
               >
                 <Pencil className="mr-2 size-5" />
                 Editar meus dados
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                className="font-bold"
+                onClick={handleEditItems}
+              >
+                <ShoppingBag className="mr-2 size-5" />
+                Editar itens e quantidades
               </Button>
               <Button asChild variant="ghost" size="lg" className="font-bold">
                 <Link to="/">Voltar para Início</Link>
