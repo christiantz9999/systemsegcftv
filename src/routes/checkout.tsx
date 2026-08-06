@@ -127,7 +127,10 @@ function CheckoutPage() {
         `📮 CEP: ${formData.zip}\n\n` +
         `*PRODUTOS:*\n` +
         `${itemsList}\n\n` +
-        `*TOTAL: ${totalValueFormatted}*\n\n` +
+        `*SUBTOTAL: ${totalValueFormatted}*\n` +
+        `*FRETE: A combinar*\n` +
+        `*TOTAL DOS PRODUTOS: ${totalValueFormatted}*\n\n` +
+        `_O valor do frete será calculado e somado ao total durante o atendimento._\n\n` +
         `_Aguardando confirmação de disponibilidade e pagamento._`;
 
       const link = buildWhatsAppUrl(message);
@@ -381,11 +384,14 @@ function CheckoutPage() {
                     <span className="text-green-500 font-bold uppercase text-xs">A combinar</span>
                   </div>
                   <div className="flex justify-between items-center pt-4">
-                    <span className="text-lg font-bold">Total</span>
+                    <span className="text-lg font-bold">Total dos produtos</span>
                     <span className="text-2xl font-bold font-display text-primary">
                       {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalPrice())}
                     </span>
                   </div>
+                  <p className="text-xs text-muted-foreground leading-relaxed pt-1">
+                    O valor do frete será calculado e somado ao total durante o atendimento no WhatsApp.
+                  </p>
                 </div>
 
                 <Button 

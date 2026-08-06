@@ -163,9 +163,18 @@ function OrderRecoveryPage() {
                     </div>
                   ))}
                 </div>
-                <div className="flex justify-between items-center pt-4 border-t border-border">
-                  <span className="font-bold text-lg">Total</span>
-                  <span className="font-bold text-2xl text-primary font-display">{formatPrice(order.total)}</span>
+                <div className="pt-4 border-t border-border space-y-2">
+                  <div className="flex justify-between text-sm text-muted-foreground">
+                    <span>Frete</span>
+                    <span className="font-bold uppercase text-xs">A combinar</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="font-bold text-lg">Total dos produtos</span>
+                    <span className="font-bold text-2xl text-primary font-display">{formatPrice(order.total)}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    O valor do frete será calculado e somado ao total durante o atendimento no WhatsApp.
+                  </p>
                 </div>
               </div>
 
