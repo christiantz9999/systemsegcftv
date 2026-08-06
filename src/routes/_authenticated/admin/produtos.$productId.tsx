@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate, useParams } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
 import { Header } from '@/components/landing/Header'
 import { Footer } from '@/components/landing/Footer'
-import { ChevronLeft, Save, Loader2 } from 'lucide-react'
+import { ChevronLeft, Save, Loader2, Upload, X } from 'lucide-react'
 import { supabase } from '@/integrations/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -22,6 +22,7 @@ function EditProductPage() {
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
   const [isFetching, setIsFetching] = useState(true)
+  const [isUploading, setIsUploading] = useState(false)
   const [categories, setCategories] = useState<any[]>([])
   
   const [formData, setFormData] = useState({
@@ -65,6 +66,35 @@ function EditProductPage() {
     }
 
     setIsFetching(false)
+  }
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setIsUploading(true)
+    try {
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${productId}-${Math.random()}.${fileExt}`
+      const filePath = `${fileName}`
+
+      const { error: uploadError } = await supabase.storage
+        .from('products')
+        .upload(filePath, file)
+
+      if (uploadError) throw uploadError
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('products')
+        .getPublicUrl(filePath)
+
+      setFormData(prev => ({ ...prev, image_url: publicUrl }))
+      toast.success('Imagem enviada com sucesso!')
+    } catch (error: any) {
+      toast.error('Erro ao enviar imagem: ' + error.message)
+    } finally {
+      setIsUploading(false)
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -179,13 +209,60 @@ function EditProductPage() {
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="image_url">URL da Imagem</Label>
-                <Input 
-                  id="image_url"
-                  value={formData.image_url}
-                  onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
-                />
+              <div className="space-y-4">
+                <Label>Imagem do Produto</Label>
+                
+                {formData.image_url && (
+                  <div className="relative aspect-square w-full max-w-[200px] overflow-hidden rounded-xl border border-border">
+                    <img 
+                      src={formData.image_url} 
+                      alt="Preview" 
+                      className="h-full w-full object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, image_url: '' }))}
+                      className="absolute top-2 right-2 p-1 bg-destructive text-destructive-foreground rounded-full hover:opacity-90 transition-opacity"
+                    >
+                      <X className="size-4" />
+                    </button>
+                  </div>
+                )}
+
+                <div className="flex items-center gap-4">
+                  <div className="flex-1">
+                    <Label htmlFor="image_url" className="sr-only">URL da Imagem</Label>
+                    <Input 
+                      id="image_url"
+                      placeholder="https://..."
+                      value={formData.image_url}
+                      onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
+                    />
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="file"
+                      id="file-upload"
+                      className="sr-only"
+                      accept="image/*"
+                      onChange={handleFileUpload}
+                      disabled={isUploading}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      disabled={isUploading}
+                      onClick={() => document.getElementById('file-upload')?.click()}
+                    >
+                      {isUploading ? (
+                        <Loader2 className="size-4 animate-spin mr-2" />
+                      ) : (
+                        <Upload className="size-4 mr-2" />
+                      )}
+                      Upload
+                    </Button>
+                  </div>
+                </div>
               </div>
 
               <div className="flex items-center justify-between p-4 rounded-xl border border-border bg-secondary/20">
