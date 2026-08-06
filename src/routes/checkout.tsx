@@ -150,6 +150,22 @@ function CheckoutPage() {
       setWhatsappMessage(message);
       setOrderReference(reference);
       setRecoveryLink(`${window.location.origin}/pedido/${order.id}`);
+      setPdfData({
+        reference,
+        createdAt: new Date(),
+        customerName: formData.name,
+        customerPhone: formData.phone,
+        address: formData.address,
+        city: formData.city,
+        zip: formData.zip,
+        items: items.map((item: CartItem) => ({
+          name: item.name,
+          description: item.description ?? "",
+          price: item.price,
+          quantity: item.quantity,
+        })),
+        total: totalPrice(),
+      });
 
       setIsSuccess(true);
       toast.success("Pedido gerado com sucesso!");
@@ -178,6 +194,19 @@ function CheckoutPage() {
   const handleOpenWhatsApp = () => {
     clearCart();
     window.open(whatsappLink, "_blank", "noopener,noreferrer");
+  };
+
+  const handleDownloadPdf = async () => {
+    if (!pdfData || isGeneratingPdf) return;
+    setIsGeneratingPdf(true);
+    try {
+      await generateOrderPdf(pdfData);
+      toast.success("PDF do pedido baixado!");
+    } catch {
+      toast.error("Erro ao gerar o PDF do pedido");
+    } finally {
+      setIsGeneratingPdf(false);
+    }
   };
 
   const handleEditData = () => {
