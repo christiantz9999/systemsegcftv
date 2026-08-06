@@ -86,12 +86,20 @@ function CheckoutPage() {
     setIsSubmitting(true);
 
     try {
-      // Format items for WhatsApp
-      const itemsList = items
-        .map((item: CartItem) => `- ${item.quantity}x ${item.name} (${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(item.price)})`)
-        .join("\n");
+      // Format items for WhatsApp (quantidade, nome, descrição curta e valores)
+      const formatBRL = (value: number) =>
+        new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
 
-      const totalValueFormatted = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalPrice());
+      const itemsList = items
+        .map((item: CartItem) => {
+          const shortDesc = item.description
+            ? `\n   _${item.description.length > 90 ? item.description.slice(0, 90).trim() + "…" : item.description}_`
+            : "";
+          return `- ${item.quantity}x ${item.name}${shortDesc}\n   ${formatBRL(item.price)} cada | Subtotal: ${formatBRL(item.price * item.quantity)}`;
+        })
+        .join("\n\n");
+
+      const totalValueFormatted = formatBRL(totalPrice());
 
       // Salva o pedido no banco para permitir recuperação via link
       const reference = generateOrderReference();
@@ -107,6 +115,7 @@ function CheckoutPage() {
           items: items.map((item: CartItem) => ({
             id: item.id,
             name: item.name,
+            description: item.description ?? "",
             price: item.price,
             image_url: item.image_url,
             quantity: item.quantity,

@@ -4,6 +4,7 @@ import { persist } from 'zustand/middleware';
 export interface CartItem {
   id: string;
   name: string;
+  description?: string;
   price: number;
   image_url: string;
   quantity: number;
@@ -38,16 +39,17 @@ export const useCart = create<CartStore>()(
           });
         } else {
           set({
-            items: [
-              ...currentItems,
-              {
-                id: product.id,
-                name: product.name,
-                price: product.price,
-                image_url: product.image_url,
-                quantity: 1,
-              },
-            ],
+          items: [
+            ...currentItems,
+            {
+              id: product.id,
+              name: product.name,
+              description: product.description ?? "",
+              price: product.price,
+              image_url: product.image_url,
+              quantity: 1,
+            },
+          ],
           });
         }
       },
