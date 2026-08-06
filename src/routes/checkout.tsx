@@ -6,9 +6,10 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ShoppingBag, CreditCard, ShieldCheck, CheckCircle2, Loader2, ChevronLeft, MessageSquare, ExternalLink, Pencil, Copy, Link2 } from "lucide-react";
+import { ShoppingBag, CreditCard, ShieldCheck, CheckCircle2, Loader2, ChevronLeft, MessageSquare, ExternalLink, Pencil, Copy, Link2, Download, FileText } from "lucide-react";
 import { toast } from "sonner";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
+import { generateOrderPdf, OrderPdfData } from "@/lib/order-pdf";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "@tanstack/react-router";
 
@@ -34,6 +35,8 @@ function CheckoutPage() {
   const [whatsappMessage, setWhatsappMessage] = useState("");
   const [recoveryLink, setRecoveryLink] = useState("");
   const [orderReference, setOrderReference] = useState("");
+  const [pdfData, setPdfData] = useState<OrderPdfData | null>(null);
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -147,6 +150,22 @@ function CheckoutPage() {
       setWhatsappMessage(message);
       setOrderReference(reference);
       setRecoveryLink(`${window.location.origin}/pedido/${order.id}`);
+      setPdfData({
+        reference,
+        createdAt: new Date(),
+        customerName: formData.name,
+        customerPhone: formData.phone,
+        address: formData.address,
+        city: formData.city,
+        zip: formData.zip,
+        items: items.map((item: CartItem) => ({
+          name: item.name,
+          description: item.description ?? "",
+          price: item.price,
+          quantity: item.quantity,
+        })),
+        total: totalPrice(),
+      });
 
       setIsSuccess(true);
       toast.success("Pedido gerado com sucesso!");
@@ -175,6 +194,19 @@ function CheckoutPage() {
   const handleOpenWhatsApp = () => {
     clearCart();
     window.open(whatsappLink, "_blank", "noopener,noreferrer");
+  };
+
+  const handleDownloadPdf = async () => {
+    if (!pdfData || isGeneratingPdf) return;
+    setIsGeneratingPdf(true);
+    try {
+      await generateOrderPdf(pdfData);
+      toast.success("PDF do pedido baixado!");
+    } catch {
+      toast.error("Erro ao gerar o PDF do pedido");
+    } finally {
+      setIsGeneratingPdf(false);
+    }
   };
 
   const handleEditData = () => {
@@ -222,6 +254,32 @@ function CheckoutPage() {
                   Copiar link
                 </Button>
               </div>
+            </div>
+
+            <div className="rounded-2xl border border-border bg-card p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="space-y-1 text-center sm:text-left">
+                <h3 className="font-bold flex items-center gap-2 justify-center sm:justify-start">
+                  <FileText className="size-5 text-primary" />
+                  Resumo do Pedido em PDF
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Baixe o resumo com seus dados, itens e valores para guardar ou conferir antes de enviar no WhatsApp.
+                </p>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                className="shrink-0 font-bold"
+                onClick={handleDownloadPdf}
+                disabled={isGeneratingPdf}
+              >
+                {isGeneratingPdf ? (
+                  <Loader2 className="mr-2 size-4 animate-spin" />
+                ) : (
+                  <Download className="mr-2 size-4" />
+                )}
+                Baixar PDF do Pedido
+              </Button>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
