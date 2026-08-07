@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { toast } from 'sonner'
-import { Loader2, AlertCircle, ShieldAlert } from 'lucide-react'
+import { Loader2, AlertCircle, ShieldAlert, MessageCircle } from 'lucide-react'
 import { useSearch } from '@tanstack/react-router'
 
 export function Auth() {
@@ -190,15 +190,29 @@ export function Auth() {
           </a>
 
           {emailStatus === 'pending' && !isSignUp && (
-            <button
-              type="button"
-              onClick={handleResendEmail}
-              disabled={resendingEmail}
-              className="text-xs text-muted-foreground hover:text-primary transition-colors mt-2 underline underline-offset-4"
-            >
-              {resendingEmail ? 'Enviando...' : 'Reenviar e-mail de confirmação'}
-            </button>
+            <div className="w-full space-y-2 mt-4">
+              <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3 text-xs text-blue-200">
+                <p className="font-bold flex items-center gap-2 mb-1">
+                  <AlertCircle className="size-3" />
+                  E-mail não confirmado
+                </p>
+                <p>Verifique sua caixa de entrada e pasta de spam para o e-mail de confirmação enviado para <strong>{email}</strong>.</p>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleResendEmail}
+                disabled={resendingEmail}
+                className="w-full text-xs h-9"
+              >
+                {resendingEmail ? (
+                  <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                ) : null}
+                Reenviar e-mail de confirmação
+              </Button>
+            </div>
           )}
+
           {!isSignUp && (
             <button
               type="button"
@@ -226,17 +240,25 @@ export function Auth() {
             </button>
           )}
 
-
           {emailStatus === 'error' && (
-            <a
-              href="https://wa.me/5573991969419?text=Ol%C3%A1!%20Estou%20com%20problemas%20para%20acessar%20o%20painel%20administrativo%20da%20SystemSeg."
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs text-primary hover:underline mt-4 font-medium flex items-center gap-2 justify-center w-full"
-            >
-              <AlertCircle className="size-3" />
-              Não consigo efetuar o login
-            </a>
+            <div className="w-full space-y-3 mt-4">
+              <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3 text-xs text-destructive">
+                <p className="font-bold flex items-center gap-2 mb-1">
+                  <AlertCircle className="size-3" />
+                  Falha no acesso
+                </p>
+                <p>Não foi possível realizar o login. Verifique se o e-mail e a senha estão corretos ou se sua conta já foi confirmada.</p>
+              </div>
+              <a
+                href={`https://wa.me/5573991969419?text=Olá! Estou com problemas para acessar o painel administrativo com o e-mail ${email}. Pode me ajudar?`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full p-3 rounded-lg bg-emerald-600/10 border border-emerald-600/20 text-xs font-bold text-emerald-500 hover:bg-emerald-600/20 transition-all"
+              >
+                <MessageCircle className="size-4" />
+                Falar com Suporte no WhatsApp
+              </a>
+            </div>
           )}
         </CardFooter>
       </form>

@@ -33,11 +33,19 @@ export function Header() {
         const { data, error } = await supabase.rpc('has_role', {
           _user_id: session.user.id,
           _role: 'admin'
-        }) as { data: boolean; error: any };
+        });
         
         if (error) {
-          console.error('Erro ao verificar admin no Header:', error);
-          setIsAdmin(false);
+          console.error('Erro ao verificar admin no Header (RPC):', error);
+          // Fallback direct table check
+          const { data: roleData } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', session.user.id)
+            .eq('role', 'admin')
+            .maybeSingle();
+          
+          setIsAdmin(!!roleData);
         } else {
           setIsAdmin(!!data);
         }
