@@ -60,7 +60,7 @@ export function Header() {
 
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-xl">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <a href="#inicio" className="flex items-center gap-2.5 py-1.5 leading-none">
           <img
@@ -127,10 +127,11 @@ export function Header() {
       </div>
 
       {open && (
-        <nav
-          className="border-t border-border bg-background px-4 pb-6 pt-2 lg:hidden"
+        <div
+          className="fixed inset-x-0 top-16 bottom-0 z-40 bg-background lg:hidden overflow-y-auto"
           aria-label="Navegação móvel"
         >
+          <nav className="px-4 pb-12 pt-4">
           {NAV_ITEMS.filter(item => !item.adminOnly || isAdmin).map((item) => (
             item.href.startsWith("/") ? (
               <Link
@@ -161,7 +162,8 @@ export function Header() {
             <MessageCircle className="size-4" aria-hidden />
             Solicitar orçamento grátis
           </a>
-        </nav>
+          </nav>
+        </div>
       )}
     </header>
   );

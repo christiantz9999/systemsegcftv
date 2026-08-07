@@ -28,7 +28,7 @@ export function Hero() {
             SEGURANÇA ELETRÔNICA PROFISSIONAL
           </span>
 
-          <h1 className="mt-6 font-display text-4xl font-extrabold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
+          <h1 className="mt-6 font-display text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl lg:leading-[1.08]">
             Proteja o que é seu com{" "}
             <span className="text-primary">tecnologia e confiança</span>
           </h1>
@@ -84,7 +84,7 @@ export function Hero() {
             alt="Câmera Intelbras PTZ profissional top de linha 2026"
             width={1024}
             height={1024}
-            className="relative z-10 w-full drop-shadow-[0_40px_80px_rgba(0,0,0,0.6)]"
+            className="relative z-10 w-full drop-shadow-[0_20px_40px_rgba(0,0,0,0.4)] lg:drop-shadow-[0_40px_80px_rgba(0,0,0,0.6)]"
             fetchPriority="high"
           />
         </div>

@@ -73,7 +73,7 @@ export function Pricing() {
               key={plan.name}
               className={`relative flex flex-col rounded-3xl border p-8 transition-all hover:shadow-xl ${
                 plan.highlight
-                  ? "border-primary bg-card ring-1 ring-primary scale-105 z-10"
+                  ? "border-primary bg-card ring-1 ring-primary md:scale-105 z-10"
                   : "border-border bg-card/50"
               }`}
             >
