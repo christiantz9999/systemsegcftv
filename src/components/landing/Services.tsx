@@ -80,7 +80,7 @@ export function Services() {
           </p>
         </div>
 
-        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4 items-stretch">
           {SERVICES.map((service) => (
             <article
               key={service.title}
