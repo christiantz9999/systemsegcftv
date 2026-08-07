@@ -15,13 +15,25 @@ export const Route = createFileRoute('/_authenticated')({
     
     // Check if user is admin for /admin routes
     if (location.pathname.includes('/admin')) {
-      const { data: isAdmin, error: rpcError } = await supabase.rpc('has_role', {
+      let isAdmin = false;
+      const { data, error: rpcError } = await supabase.rpc('has_role', {
         _user_id: session.user.id,
         _role: 'admin'
-      }) as { data: boolean; error: any };
+      });
       
       if (rpcError) {
-        console.error('Erro ao verificar permissões:', rpcError)
+        console.error('Erro ao verificar permissões via RPC:', rpcError);
+        // Fallback: tentar ler a tabela diretamente se o RPC falhar (embora RLS possa impedir)
+        const { data: roleData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .eq('role', 'admin')
+          .maybeSingle();
+        
+        isAdmin = !!roleData;
+      } else {
+        isAdmin = !!data;
       }
       
       if (!isAdmin) {
