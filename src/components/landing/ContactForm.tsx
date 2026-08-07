@@ -30,7 +30,7 @@ function maskPhone(value: string) {
 }
 
 const inputClass =
-  "w-full rounded-lg border border-border bg-secondary/50 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/70 outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/30";
+  "w-full rounded-lg border border-border bg-secondary/50 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/70 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/30 active:scale-[0.99]";
 
 type Errors = Partial<Record<"nome" | "telefone" | "endereco" | "cidade", string>>;
 
