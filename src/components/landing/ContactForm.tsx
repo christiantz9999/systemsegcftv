@@ -30,7 +30,7 @@ function maskPhone(value: string) {
 }
 
 const inputClass =
-  "w-full rounded-lg border border-border bg-secondary/50 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/70 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/30 focus-visible:ring-primary active:scale-[0.99]";
+  "w-full rounded-lg border border-border bg-secondary/50 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/70 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/30 focus-visible:ring-primary active:scale-[0.99] aria-[invalid=true]:border-destructive aria-[invalid=true]:focus:ring-destructive/30";
 
 type Errors = Partial<Record<"nome" | "telefone" | "endereco" | "cidade", string>>;
 
@@ -43,6 +43,7 @@ export function ContactForm() {
   const [descricao, setDescricao] = useState("");
   const [errors, setErrors] = useState<Errors>({});
   const [sent, setSent] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   function toggleServico(option: string) {
     setServicos((prev) =>
@@ -52,17 +53,42 @@ export function ContactForm() {
     );
   }
 
+  function validate() {
+    const nextErrors: Errors = {};
+    const phoneDigits = telefone.replace(/\D/g, "");
+
+    if (nome.trim().length < 3) {
+      nextErrors.nome = "Por favor, informe seu nome completo (mínimo 3 caracteres).";
+    }
+
+    if (phoneDigits.length < 10) {
+      nextErrors.telefone = "Informe um telefone válido com DDD (ex: 73 99999-9999).";
+    }
+
+    if (!endereco.trim() || endereco.trim().length < 5) {
+      nextErrors.endereco = "Informe seu endereço completo para facilitar o atendimento.";
+    }
+
+    if (!cidade.trim()) {
+      nextErrors.cidade = "Informe sua cidade.";
+    }
+
+    setErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
+  }
+
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
+    setIsSubmitting(true);
 
-    const nextErrors: Errors = {};
-    if (nome.trim().length < 3) nextErrors.nome = "Informe seu nome completo.";
-    if (telefone.replace(/\D/g, "").length < 10)
-      nextErrors.telefone = "Informe um telefone válido com DDD.";
-    if (!endereco.trim()) nextErrors.endereco = "Informe seu endereço.";
-    if (!cidade.trim()) nextErrors.cidade = "Informe sua cidade.";
-    setErrors(nextErrors);
-    if (Object.keys(nextErrors).length > 0) return;
+    if (!validate()) {
+      setIsSubmitting(false);
+      // Rolar até o primeiro erro para acessibilidade
+      const firstError = document.querySelector('[aria-invalid="true"]');
+      firstError?.scrollIntoView({ behavior: "smooth", block: "center" });
+      (firstError as HTMLElement)?.focus();
+      return;
+    }
 
     const message = [
       "*Novo contato pelo site SystemSeg*",
@@ -77,8 +103,21 @@ export function ContactForm() {
       .filter(Boolean)
       .join("\n");
 
-    window.open(buildWhatsAppUrl(message), "_blank", "noopener,noreferrer");
-    setSent(true);
+    try {
+      window.open(buildWhatsAppUrl(message), "_blank", "noopener,noreferrer");
+      setSent(true);
+      // Limpar formulário após envio bem-sucedido (opcional, mas bom UX)
+      setNome("");
+      setTelefone("");
+      setEndereco("");
+      setCidade("");
+      setServicos([]);
+      setDescricao("");
+    } catch (err) {
+      console.error("Erro ao abrir WhatsApp:", err);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
