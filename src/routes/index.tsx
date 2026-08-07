@@ -52,7 +52,7 @@ function Index() {
   return (
     <div className="min-h-screen bg-background font-sans text-foreground antialiased relative">
       <Header />
-      <main>
+      <main id="main-content" tabIndex={-1} className="outline-none">
         <Hero />
         <Services />
         <Pricing />
