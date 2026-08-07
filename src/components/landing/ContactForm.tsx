@@ -384,10 +384,15 @@ export function ContactForm() {
 
             <button
               type="submit"
-              className="mt-7 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-7 py-4 text-sm font-bold text-primary-foreground transition-all hover:brightness-110 glow-primary"
+              disabled={isSubmitting}
+              className="mt-7 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-7 py-4 text-sm font-bold text-primary-foreground transition-all hover:brightness-110 glow-primary disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              <Send className="size-4" aria-hidden />
-              Enviar pelo WhatsApp
+              {isSubmitting ? (
+                <div className="size-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
+              ) : (
+                <Send className="size-4" aria-hidden />
+              )}
+              {isSubmitting ? "Enviando..." : "Enviar pelo WhatsApp"}
             </button>
 
             {sent && (
