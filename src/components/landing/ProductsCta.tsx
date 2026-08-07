@@ -59,6 +59,7 @@ export function ProductsCta() {
                 width={1024}
                 height={768}
                 loading="lazy"
+                decoding="async"
                 className="rounded-2xl border border-border object-cover shadow-2xl"
               />
             </div>
