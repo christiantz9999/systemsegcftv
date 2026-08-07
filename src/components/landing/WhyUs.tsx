@@ -46,6 +46,7 @@ export function WhyUs() {
             width={1024}
             height={768}
             loading="lazy"
+            decoding="async"
             className="relative rounded-3xl border border-border w-full h-auto object-cover shadow-2xl"
           />
           <div className="absolute -bottom-6 left-6 rounded-2xl border border-border bg-card px-6 py-4 shadow-xl">
