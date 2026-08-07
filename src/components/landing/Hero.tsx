@@ -86,6 +86,7 @@ export function Hero() {
             height={1024}
             className="relative z-10 w-full drop-shadow-[0_20px_40px_rgba(0,0,0,0.4)] lg:drop-shadow-[0_40px_80px_rgba(0,0,0,0.6)]"
             fetchPriority="high"
+            decoding="async"
           />
         </div>
       </div>
