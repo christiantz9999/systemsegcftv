@@ -48,17 +48,30 @@ export function Auth() {
           email,
           password,
         })
-        if (error) throw error
+        if (error) {
+          if (error.message.includes('User already registered')) {
+            toast.error('Este e-mail já está cadastrado. Tente fazer login.')
+          } else if (error.message.includes('Password should be')) {
+            toast.error('A senha deve ter pelo menos 6 caracteres.')
+          } else {
+            throw error
+          }
+          return
+        }
         toast.success('Cadastro realizado! Verifique seu e-mail para confirmar a conta.')
       } else {
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
         })
         if (error) {
           if (error.message.includes('Email not confirmed')) {
             setEmailStatus('pending')
-            toast.error('E-mail não confirmado. Verifique sua caixa de entrada ou use o botão abaixo para reenviar.')
+            toast.error('E-mail não confirmado. Verifique sua caixa de entrada ou spam.')
+          } else if (error.message.includes('Invalid login credentials')) {
+            toast.error('E-mail ou senha incorretos. Verifique seus dados.')
+          } else if (error.message.includes('Too many requests')) {
+            toast.error('Muitas tentativas. Tente novamente em alguns minutos.')
           } else {
             setEmailStatus('error')
             throw error
