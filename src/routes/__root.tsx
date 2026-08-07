@@ -122,7 +122,13 @@ function RootShell({ children }: { children: ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body className="selection:bg-primary/30 selection:text-primary-foreground focus-visible:outline-none">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-primary-foreground focus:ring-4 focus:ring-primary/20"
+        >
+          Pular para o conteúdo
+        </a>
         {children}
         <Scripts />
       </body>
