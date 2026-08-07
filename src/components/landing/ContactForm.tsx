@@ -219,14 +219,22 @@ export function ContactForm() {
                   id="nome"
                   type="text"
                   value={nome}
-                  onChange={(e) => setNome(e.target.value)}
+                  onChange={(e) => {
+                    setNome(e.target.value);
+                    if (errors.nome) setErrors((prev) => ({ ...prev, nome: undefined }));
+                  }}
                   placeholder="Seu nome completo"
                   maxLength={100}
                   className={inputClass}
                   autoComplete="name"
+                  aria-invalid={!!errors.nome}
+                  aria-describedby={errors.nome ? "nome-error" : undefined}
+                  required
                 />
                 {errors.nome && (
-                  <p className="mt-1.5 text-xs font-medium text-destructive">{errors.nome}</p>
+                  <p id="nome-error" className="mt-1.5 text-xs font-medium text-destructive" role="alert">
+                    {errors.nome}
+                  </p>
                 )}
               </div>
 
@@ -238,13 +246,19 @@ export function ContactForm() {
                   id="telefone"
                   type="tel"
                   value={telefone}
-                  onChange={(e) => setTelefone(maskPhone(e.target.value))}
+                  onChange={(e) => {
+                    setTelefone(maskPhone(e.target.value));
+                    if (errors.telefone) setErrors((prev) => ({ ...prev, telefone: undefined }));
+                  }}
                   placeholder="(73) 99999-9999"
                   className={inputClass}
                   autoComplete="tel"
+                  aria-invalid={!!errors.telefone}
+                  aria-describedby={errors.telefone ? "telefone-error" : undefined}
+                  required
                 />
                 {errors.telefone && (
-                  <p className="mt-1.5 text-xs font-medium text-destructive">
+                  <p id="telefone-error" className="mt-1.5 text-xs font-medium text-destructive" role="alert">
                     {errors.telefone}
                   </p>
                 )}
@@ -258,14 +272,22 @@ export function ContactForm() {
                   id="cidade"
                   type="text"
                   value={cidade}
-                  onChange={(e) => setCidade(e.target.value)}
+                  onChange={(e) => {
+                    setCidade(e.target.value);
+                    if (errors.cidade) setErrors((prev) => ({ ...prev, cidade: undefined }));
+                  }}
                   placeholder="Sua cidade"
                   maxLength={80}
                   className={inputClass}
                   autoComplete="address-level2"
+                  aria-invalid={!!errors.cidade}
+                  aria-describedby={errors.cidade ? "cidade-error" : undefined}
+                  required
                 />
                 {errors.cidade && (
-                  <p className="mt-1.5 text-xs font-medium text-destructive">{errors.cidade}</p>
+                  <p id="cidade-error" className="mt-1.5 text-xs font-medium text-destructive" role="alert">
+                    {errors.cidade}
+                  </p>
                 )}
               </div>
 
@@ -277,14 +299,20 @@ export function ContactForm() {
                   id="endereco"
                   type="text"
                   value={endereco}
-                  onChange={(e) => setEndereco(e.target.value)}
+                  onChange={(e) => {
+                    setEndereco(e.target.value);
+                    if (errors.endereco) setErrors((prev) => ({ ...prev, endereco: undefined }));
+                  }}
                   placeholder="Rua, número, bairro"
                   maxLength={150}
                   className={inputClass}
                   autoComplete="street-address"
+                  aria-invalid={!!errors.endereco}
+                  aria-describedby={errors.endereco ? "endereco-error" : undefined}
+                  required
                 />
                 {errors.endereco && (
-                  <p className="mt-1.5 text-xs font-medium text-destructive">
+                  <p id="endereco-error" className="mt-1.5 text-xs font-medium text-destructive" role="alert">
                     {errors.endereco}
                   </p>
                 )}
