@@ -45,6 +45,9 @@ interface RecoveredOrder {
 const STATUS_LABELS: Record<string, string> = {
   pending: "Aguardando contato",
   contacted: "Em atendimento",
+  paid: "Pago",
+  shipped: "Enviado",
+  delivered: "Entregue",
   completed: "Concluído",
   cancelled: "Cancelado",
 };
