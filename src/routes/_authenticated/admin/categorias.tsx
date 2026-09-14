@@ -17,6 +17,29 @@ function AdminCategories() {
   const [isLoading, setIsLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [newCategoryName, setNewCategoryName] = useState('')
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editingName, setEditingName] = useState('')
+
+  const makeSlug = (value: string) =>
+    value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+
+  const handleUpdate = async (id: string) => {
+    const name = editingName.trim()
+    if (!name) return
+    const { error } = await supabase
+      .from('categories')
+      .update({ name, slug: makeSlug(name) })
+      .eq('id', id)
+
+    if (error) {
+      toast.error('Erro ao atualizar categoria')
+      return
+    }
+    toast.success('Categoria atualizada')
+    setEditingId(null)
+    setEditingName('')
+    fetchCategories()
+  }
 
   useEffect(() => {
     fetchCategories()
