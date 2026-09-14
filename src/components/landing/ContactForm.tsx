@@ -1,23 +1,15 @@
 import { Instagram, Mail, MessageCircle, Send } from "lucide-react";
 import { useState, type FormEvent } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import {
   DEFAULT_WHATSAPP_URL,
   EMAIL,
   INSTAGRAM_HANDLE,
   INSTAGRAM_URL,
   WHATSAPP_DISPLAY,
-  buildWhatsAppUrl,
 } from "@/lib/whatsapp";
-
-const SERVICE_OPTIONS = [
-  "Câmeras",
-  "Portões Automáticos",
-  "Cerca Elétrica",
-  "Interfone",
-  "Fechadura Biométrica",
-  "Vídeo Porteiro",
-  "Outros",
-];
+import { SERVICE_OPTIONS } from "@/lib/contact-schema";
+import { submitContactForm } from "@/lib/contact.functions";
 
 function maskPhone(value: string) {
   const digits = value.replace(/\D/g, "").slice(0, 11);
