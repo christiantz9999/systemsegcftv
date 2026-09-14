@@ -35,5 +35,22 @@ export const submitContactForm = createServerFn({ method: "POST" })
     }
 
     const message = buildContactMessage(parsed.data);
+
+    // Registra a mensagem no painel administrativo (independe do WhatsApp).
+    try {
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      await supabaseAdmin.from("contact_messages").insert({
+        name: parsed.data.nome,
+        phone: parsed.data.telefone,
+        address: parsed.data.endereco,
+        city: parsed.data.cidade,
+        services: parsed.data.servicos,
+        description: parsed.data.descricao || null,
+      });
+    } catch (error) {
+      console.error("Falha ao registrar mensagem de contato", error);
+    }
+
     return { ok: true, url: buildWhatsAppUrl(message), message };
   });
+

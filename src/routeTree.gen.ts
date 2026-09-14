@@ -18,6 +18,8 @@ import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-passw
 import { Route as PedidoOrderIdRouteImport } from './routes/pedido.$orderId'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as AuthenticatedAdminCategoriasRouteImport } from './routes/_authenticated/admin/categorias'
+import { Route as AuthenticatedAdminClientesRouteImport } from './routes/_authenticated/admin/clientes'
+import { Route as AuthenticatedAdminMensagensRouteImport } from './routes/_authenticated/admin/mensagens'
 import { Route as AuthenticatedAdminPedidosRouteImport } from './routes/_authenticated/admin/pedidos'
 import { Route as AuthenticatedAdminProdutosRouteImport } from './routes/_authenticated/admin/produtos'
 import { Route as AuthenticatedAdminProdutosIndexRouteImport } from './routes/_authenticated/admin/produtos.index'
@@ -69,6 +71,18 @@ const AuthenticatedAdminCategoriasRoute =
     path: '/admin/categorias',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminClientesRoute =
+  AuthenticatedAdminClientesRouteImport.update({
+    id: '/admin/clientes',
+    path: '/admin/clientes',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAdminMensagensRoute =
+  AuthenticatedAdminMensagensRouteImport.update({
+    id: '/admin/mensagens',
+    path: '/admin/mensagens',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminPedidosRoute =
   AuthenticatedAdminPedidosRouteImport.update({
     id: '/admin/pedidos',
@@ -108,6 +122,8 @@ export interface FileRoutesByFullPath {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/pedido/$orderId': typeof PedidoOrderIdRoute
   '/admin/categorias': typeof AuthenticatedAdminCategoriasRoute
+  '/admin/clientes': typeof AuthenticatedAdminClientesRoute
+  '/admin/mensagens': typeof AuthenticatedAdminMensagensRoute
   '/admin/pedidos': typeof AuthenticatedAdminPedidosRoute
   '/admin/produtos': typeof AuthenticatedAdminProdutosRouteWithChildren
   '/admin/': typeof AuthenticatedAdminIndexRoute
@@ -123,6 +139,8 @@ export interface FileRoutesByTo {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/pedido/$orderId': typeof PedidoOrderIdRoute
   '/admin/categorias': typeof AuthenticatedAdminCategoriasRoute
+  '/admin/clientes': typeof AuthenticatedAdminClientesRoute
+  '/admin/mensagens': typeof AuthenticatedAdminMensagensRoute
   '/admin/pedidos': typeof AuthenticatedAdminPedidosRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/produtos/$productId': typeof AuthenticatedAdminProdutosProductIdRoute
@@ -139,6 +157,8 @@ export interface FileRoutesById {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/pedido/$orderId': typeof PedidoOrderIdRoute
   '/_authenticated/admin/categorias': typeof AuthenticatedAdminCategoriasRoute
+  '/_authenticated/admin/clientes': typeof AuthenticatedAdminClientesRoute
+  '/_authenticated/admin/mensagens': typeof AuthenticatedAdminMensagensRoute
   '/_authenticated/admin/pedidos': typeof AuthenticatedAdminPedidosRoute
   '/_authenticated/admin/produtos': typeof AuthenticatedAdminProdutosRouteWithChildren
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
@@ -156,6 +176,8 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/pedido/$orderId'
     | '/admin/categorias'
+    | '/admin/clientes'
+    | '/admin/mensagens'
     | '/admin/pedidos'
     | '/admin/produtos'
     | '/admin/'
@@ -171,6 +193,8 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/pedido/$orderId'
     | '/admin/categorias'
+    | '/admin/clientes'
+    | '/admin/mensagens'
     | '/admin/pedidos'
     | '/admin'
     | '/admin/produtos/$productId'
@@ -186,6 +210,8 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/pedido/$orderId'
     | '/_authenticated/admin/categorias'
+    | '/_authenticated/admin/clientes'
+    | '/_authenticated/admin/mensagens'
     | '/_authenticated/admin/pedidos'
     | '/_authenticated/admin/produtos'
     | '/_authenticated/admin/'
@@ -268,6 +294,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminCategoriasRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/clientes': {
+      id: '/_authenticated/admin/clientes'
+      path: '/admin/clientes'
+      fullPath: '/admin/clientes'
+      preLoaderRoute: typeof AuthenticatedAdminClientesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/mensagens': {
+      id: '/_authenticated/admin/mensagens'
+      path: '/admin/mensagens'
+      fullPath: '/admin/mensagens'
+      preLoaderRoute: typeof AuthenticatedAdminMensagensRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin/pedidos': {
       id: '/_authenticated/admin/pedidos'
       path: '/admin/pedidos'
@@ -327,6 +367,8 @@ const AuthenticatedAdminProdutosRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminCategoriasRoute: typeof AuthenticatedAdminCategoriasRoute
+  AuthenticatedAdminClientesRoute: typeof AuthenticatedAdminClientesRoute
+  AuthenticatedAdminMensagensRoute: typeof AuthenticatedAdminMensagensRoute
   AuthenticatedAdminPedidosRoute: typeof AuthenticatedAdminPedidosRoute
   AuthenticatedAdminProdutosRoute: typeof AuthenticatedAdminProdutosRouteWithChildren
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
@@ -334,6 +376,8 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminCategoriasRoute: AuthenticatedAdminCategoriasRoute,
+  AuthenticatedAdminClientesRoute: AuthenticatedAdminClientesRoute,
+  AuthenticatedAdminMensagensRoute: AuthenticatedAdminMensagensRoute,
   AuthenticatedAdminPedidosRoute: AuthenticatedAdminPedidosRoute,
   AuthenticatedAdminProdutosRoute: AuthenticatedAdminProdutosRouteWithChildren,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
