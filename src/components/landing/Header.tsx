@@ -127,11 +127,9 @@ export function Header() {
       </div>
 
       {open && (
-        <div
-          className="fixed inset-x-0 top-16 bottom-0 z-40 bg-background lg:hidden overflow-y-auto"
-          aria-label="Navegação móvel"
-        >
-          <nav className="px-4 pb-12 pt-4">
+        <div className="fixed inset-x-0 top-16 z-40 h-[calc(100dvh-4rem)] overflow-y-auto bg-background lg:hidden">
+          <nav className="px-4 pb-12 pt-4" aria-label="Navegação móvel">
+
           {NAV_ITEMS.filter(item => !item.adminOnly || isAdmin).map((item) => (
             item.href.startsWith("/") ? (
               <Link
