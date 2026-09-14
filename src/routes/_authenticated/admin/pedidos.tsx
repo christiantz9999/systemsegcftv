@@ -170,9 +170,20 @@ function AdminOrders() {
               <h1 className="text-3xl font-bold font-display">Pedidos</h1>
               <p className="text-muted-foreground">Acompanhe os pedidos gerados no checkout da loja.</p>
             </div>
-            <Button asChild variant="outline" className="font-bold">
-              <Link to="/admin">Voltar ao Painel</Link>
-            </Button>
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                variant="outline"
+                className="font-bold text-destructive border-destructive/40 hover:bg-destructive/10"
+                disabled={filteredOrders.length === 0}
+                onClick={handleDeleteAll}
+              >
+                <Trash2 className="size-4 mr-2" />
+                Apagar histórico ({filteredOrders.length})
+              </Button>
+              <Button asChild variant="outline" className="font-bold">
+                <Link to="/admin">Voltar ao Painel</Link>
+              </Button>
+            </div>
           </div>
 
           <div className="bg-card border border-border rounded-2xl p-4 mb-8 space-y-4">
