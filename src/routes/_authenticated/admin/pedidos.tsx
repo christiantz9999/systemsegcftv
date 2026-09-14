@@ -109,6 +109,32 @@ function AdminOrders() {
     fetchHistory(id)
   }
 
+  const handleDelete = async (id: string, reference: string) => {
+    if (!confirm(`Apagar o pedido ${reference}? Esta ação não pode ser desfeita.`)) return
+    const { error } = await supabase.from('orders').delete().eq('id', id)
+    if (error) {
+      toast.error('Erro ao apagar pedido')
+      return
+    }
+    toast.success('Pedido apagado')
+    setOrders((prev) => prev.filter((o) => o.id !== id))
+    setExpandedId((prev) => (prev === id ? null : prev))
+  }
+
+  const handleDeleteAll = async () => {
+    const ids = filteredOrders.map((o) => o.id)
+    if (ids.length === 0) return
+    if (!confirm(`Apagar ${ids.length} pedido(s) da lista atual? Esta ação não pode ser desfeita.`)) return
+    const { error } = await supabase.from('orders').delete().in('id', ids)
+    if (error) {
+      toast.error('Erro ao apagar pedidos')
+      return
+    }
+    toast.success('Pedidos apagados')
+    setOrders((prev) => prev.filter((o) => !ids.includes(o.id)))
+    setExpandedId(null)
+  }
+
   const handleToggleExpand = (id: string) => {
     const isExpanding = expandedId !== id
     setExpandedId(isExpanding ? id : null)
