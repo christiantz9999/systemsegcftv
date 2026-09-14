@@ -96,7 +96,8 @@ export function ContactForm() {
     }
 
     // Abre a aba de forma síncrona para não ser bloqueada pelo navegador.
-    const win = window.open("", "_blank", "noopener,noreferrer");
+    const win = window.open("", "_blank");
+    if (win) win.opener = null;
 
     try {
       const result = await submit({
