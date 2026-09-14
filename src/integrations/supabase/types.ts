@@ -35,6 +35,87 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_messages: {
+        Row: {
+          address: string | null
+          ai_suggestion: string | null
+          approved_reply: string | null
+          city: string | null
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          phone: string
+          services: string[]
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          ai_suggestion?: string | null
+          approved_reply?: string | null
+          city?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          phone: string
+          services?: string[]
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          ai_suggestion?: string | null
+          approved_reply?: string | null
+          city?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          phone?: string
+          services?: string[]
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      customers: {
+        Row: {
+          address: string | null
+          city: string | null
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          notes: string | null
+          phone: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          phone: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       migration_logs: {
         Row: {
           created_at: string | null
