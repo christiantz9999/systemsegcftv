@@ -20,6 +20,7 @@ import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminCategoriasRouteImport } from './routes/_authenticated/admin/categorias'
 import { Route as AuthenticatedAdminPedidosRouteImport } from './routes/_authenticated/admin/pedidos'
 import { Route as AuthenticatedAdminProdutosRouteImport } from './routes/_authenticated/admin/produtos'
+import { Route as AuthenticatedAdminProdutosIndexRouteImport } from './routes/_authenticated/admin/produtos.index'
 import { Route as AuthenticatedAdminProdutosProductIdRouteImport } from './routes/_authenticated/admin/produtos.$productId'
 import { Route as AuthenticatedAdminProdutosNovoRouteImport } from './routes/_authenticated/admin/produtos.novo'
 
@@ -80,6 +81,12 @@ const AuthenticatedAdminProdutosRoute =
     path: '/admin/produtos',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminProdutosIndexRoute =
+  AuthenticatedAdminProdutosIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAdminProdutosRoute,
+  } as any)
 const AuthenticatedAdminProdutosProductIdRoute =
   AuthenticatedAdminProdutosProductIdRouteImport.update({
     id: '/$productId',
@@ -106,6 +113,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/admin/produtos/$productId': typeof AuthenticatedAdminProdutosProductIdRoute
   '/admin/produtos/novo': typeof AuthenticatedAdminProdutosNovoRoute
+  '/admin/produtos/': typeof AuthenticatedAdminProdutosIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -116,10 +124,10 @@ export interface FileRoutesByTo {
   '/pedido/$orderId': typeof PedidoOrderIdRoute
   '/admin/categorias': typeof AuthenticatedAdminCategoriasRoute
   '/admin/pedidos': typeof AuthenticatedAdminPedidosRoute
-  '/admin/produtos': typeof AuthenticatedAdminProdutosRouteWithChildren
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/produtos/$productId': typeof AuthenticatedAdminProdutosProductIdRoute
   '/admin/produtos/novo': typeof AuthenticatedAdminProdutosNovoRoute
+  '/admin/produtos': typeof AuthenticatedAdminProdutosIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -136,6 +144,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/admin/produtos/$productId': typeof AuthenticatedAdminProdutosProductIdRoute
   '/_authenticated/admin/produtos/novo': typeof AuthenticatedAdminProdutosNovoRoute
+  '/_authenticated/admin/produtos/': typeof AuthenticatedAdminProdutosIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -152,6 +161,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/admin/produtos/$productId'
     | '/admin/produtos/novo'
+    | '/admin/produtos/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -162,10 +172,10 @@ export interface FileRouteTypes {
     | '/pedido/$orderId'
     | '/admin/categorias'
     | '/admin/pedidos'
-    | '/admin/produtos'
     | '/admin'
     | '/admin/produtos/$productId'
     | '/admin/produtos/novo'
+    | '/admin/produtos'
   id:
     | '__root__'
     | '/'
@@ -181,6 +191,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/'
     | '/_authenticated/admin/produtos/$productId'
     | '/_authenticated/admin/produtos/novo'
+    | '/_authenticated/admin/produtos/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -271,6 +282,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminProdutosRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/produtos/': {
+      id: '/_authenticated/admin/produtos/'
+      path: '/'
+      fullPath: '/admin/produtos/'
+      preLoaderRoute: typeof AuthenticatedAdminProdutosIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminProdutosRoute
+    }
     '/_authenticated/admin/produtos/$productId': {
       id: '/_authenticated/admin/produtos/$productId'
       path: '/$productId'
@@ -291,6 +309,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedAdminProdutosRouteChildren {
   AuthenticatedAdminProdutosProductIdRoute: typeof AuthenticatedAdminProdutosProductIdRoute
   AuthenticatedAdminProdutosNovoRoute: typeof AuthenticatedAdminProdutosNovoRoute
+  AuthenticatedAdminProdutosIndexRoute: typeof AuthenticatedAdminProdutosIndexRoute
 }
 
 const AuthenticatedAdminProdutosRouteChildren: AuthenticatedAdminProdutosRouteChildren =
@@ -298,6 +317,7 @@ const AuthenticatedAdminProdutosRouteChildren: AuthenticatedAdminProdutosRouteCh
     AuthenticatedAdminProdutosProductIdRoute:
       AuthenticatedAdminProdutosProductIdRoute,
     AuthenticatedAdminProdutosNovoRoute: AuthenticatedAdminProdutosNovoRoute,
+    AuthenticatedAdminProdutosIndexRoute: AuthenticatedAdminProdutosIndexRoute,
   }
 
 const AuthenticatedAdminProdutosRouteWithChildren =
