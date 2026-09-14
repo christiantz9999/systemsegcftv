@@ -382,13 +382,34 @@ export function ContactForm() {
               <textarea
                 id="descricao"
                 value={descricao}
-                onChange={(e) => setDescricao(e.target.value)}
+                onChange={(e) => {
+                  setDescricao(e.target.value);
+                  if (errors.descricao)
+                    setErrors((prev) => ({ ...prev, descricao: undefined }));
+                }}
                 placeholder="Conte um pouco do que você precisa (opcional)"
                 rows={4}
                 maxLength={1000}
                 className={`${inputClass} resize-none`}
+                aria-invalid={!!errors.descricao}
+                aria-describedby={errors.descricao ? "descricao-error" : undefined}
               />
+              {errors.descricao && (
+                <p id="descricao-error" className="mt-1.5 text-xs font-medium text-destructive" role="alert">
+                  {errors.descricao}
+                </p>
+              )}
             </div>
+
+            {formError && (
+              <p
+                className="mt-6 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm font-medium text-destructive"
+                role="alert"
+              >
+                {formError}
+              </p>
+            )}
+
 
             <button
               type="submit"
