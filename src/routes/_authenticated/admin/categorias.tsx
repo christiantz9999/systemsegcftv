@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
 import { Header } from '@/components/landing/Header'
 import { Footer } from '@/components/landing/Footer'
-import { Plus, Trash2, Tag, Search } from 'lucide-react'
+import { Plus, Trash2, Tag, Search, Pencil, Check, X } from 'lucide-react'
 import { supabase } from '@/integrations/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -17,6 +17,29 @@ function AdminCategories() {
   const [isLoading, setIsLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [newCategoryName, setNewCategoryName] = useState('')
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editingName, setEditingName] = useState('')
+
+  const makeSlug = (value: string) =>
+    value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+
+  const handleUpdate = async (id: string) => {
+    const name = editingName.trim()
+    if (!name) return
+    const { error } = await supabase
+      .from('categories')
+      .update({ name, slug: makeSlug(name) })
+      .eq('id', id)
+
+    if (error) {
+      toast.error('Erro ao atualizar categoria')
+      return
+    }
+    toast.success('Categoria atualizada')
+    setEditingId(null)
+    setEditingName('')
+    fetchCategories()
+  }
 
   useEffect(() => {
     fetchCategories()
@@ -146,16 +169,49 @@ function AdminCategories() {
                       ) : (
                         filteredCategories.map(cat => (
                           <tr key={cat.id} className="hover:bg-secondary/20 transition-colors">
-                            <td className="px-6 py-4">
-                              <div className="flex items-center gap-3">
-                                <Tag className="size-5 text-primary" />
-                                <span className="font-bold">{cat.name}</span>
-                              </div>
+                            <td className="px-4 sm:px-6 py-4">
+                              {editingId === cat.id ? (
+                                <form
+                                  onSubmit={(e) => { e.preventDefault(); handleUpdate(cat.id) }}
+                                  className="flex items-center gap-2"
+                                >
+                                  <Tag className="size-5 text-primary shrink-0" />
+                                  <Input
+                                    autoFocus
+                                    value={editingName}
+                                    onChange={(e) => setEditingName(e.target.value)}
+                                    className="h-9"
+                                  />
+                                </form>
+                              ) : (
+                                <div className="flex items-center gap-3 min-w-0">
+                                  <Tag className="size-5 text-primary shrink-0" />
+                                  <span className="font-bold truncate">{cat.name}</span>
+                                </div>
+                              )}
                             </td>
-                            <td className="px-6 py-4 text-right">
-                              <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10" onClick={() => handleDelete(cat.id)}>
-                                <Trash2 className="size-4" />
-                              </Button>
+                            <td className="px-4 sm:px-6 py-4 text-right">
+                              <div className="flex items-center justify-end gap-1">
+                                {editingId === cat.id ? (
+                                  <>
+                                    <Button variant="ghost" size="icon" className="text-primary hover:bg-primary/10" onClick={() => handleUpdate(cat.id)} title="Salvar">
+                                      <Check className="size-4" />
+                                    </Button>
+                                    <Button variant="ghost" size="icon" onClick={() => { setEditingId(null); setEditingName('') }} title="Cancelar">
+                                      <X className="size-4" />
+                                    </Button>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Button variant="ghost" size="icon" onClick={() => { setEditingId(cat.id); setEditingName(cat.name) }} title="Editar">
+                                      <Pencil className="size-4" />
+                                    </Button>
+                                    <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10" onClick={() => handleDelete(cat.id)} title="Excluir">
+                                      <Trash2 className="size-4" />
+                                    </Button>
+                                  </>
+                                )}
+                              </div>
                             </td>
                           </tr>
                         ))

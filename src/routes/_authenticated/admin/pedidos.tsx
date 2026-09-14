@@ -2,7 +2,7 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
 import { Header } from '@/components/landing/Header'
 import { Footer } from '@/components/landing/Footer'
-import { ChevronDown, ChevronUp, ShoppingCart, MapPin, User, CalendarClock, ExternalLink, History, Search, Calendar as CalendarIcon, X } from 'lucide-react'
+import { ChevronDown, ChevronUp, ShoppingCart, MapPin, User, CalendarClock, ExternalLink, History, Search, Calendar as CalendarIcon, X, Trash2 } from 'lucide-react'
 import { supabase } from '@/integrations/supabase/client'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
@@ -109,6 +109,32 @@ function AdminOrders() {
     fetchHistory(id)
   }
 
+  const handleDelete = async (id: string, reference: string) => {
+    if (!confirm(`Apagar o pedido ${reference}? Esta ação não pode ser desfeita.`)) return
+    const { error } = await supabase.from('orders').delete().eq('id', id)
+    if (error) {
+      toast.error('Erro ao apagar pedido')
+      return
+    }
+    toast.success('Pedido apagado')
+    setOrders((prev) => prev.filter((o) => o.id !== id))
+    setExpandedId((prev) => (prev === id ? null : prev))
+  }
+
+  const handleDeleteAll = async () => {
+    const ids = filteredOrders.map((o) => o.id)
+    if (ids.length === 0) return
+    if (!confirm(`Apagar ${ids.length} pedido(s) da lista atual? Esta ação não pode ser desfeita.`)) return
+    const { error } = await supabase.from('orders').delete().in('id', ids)
+    if (error) {
+      toast.error('Erro ao apagar pedidos')
+      return
+    }
+    toast.success('Pedidos apagados')
+    setOrders((prev) => prev.filter((o) => !ids.includes(o.id)))
+    setExpandedId(null)
+  }
+
   const handleToggleExpand = (id: string) => {
     const isExpanding = expandedId !== id
     setExpandedId(isExpanding ? id : null)
@@ -144,9 +170,20 @@ function AdminOrders() {
               <h1 className="text-3xl font-bold font-display">Pedidos</h1>
               <p className="text-muted-foreground">Acompanhe os pedidos gerados no checkout da loja.</p>
             </div>
-            <Button asChild variant="outline" className="font-bold">
-              <Link to="/admin">Voltar ao Painel</Link>
-            </Button>
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                variant="outline"
+                className="font-bold text-destructive border-destructive/40 hover:bg-destructive/10"
+                disabled={filteredOrders.length === 0}
+                onClick={handleDeleteAll}
+              >
+                <Trash2 className="size-4 mr-2" />
+                Apagar histórico ({filteredOrders.length})
+              </Button>
+              <Button asChild variant="outline" className="font-bold">
+                <Link to="/admin">Voltar ao Painel</Link>
+              </Button>
+            </div>
           </div>
 
           <div className="bg-card border border-border rounded-2xl p-4 mb-8 space-y-4">
@@ -293,19 +330,21 @@ function AdminOrders() {
                     </button>
 
                     {isExpanded && (
-                      <div className="px-6 pb-6 pt-2 border-t border-border space-y-4">
+                      <div className="px-4 sm:px-6 pb-6 pt-2 border-t border-border space-y-4">
                         <div className="grid gap-6 md:grid-cols-3">
-                          <div className="space-y-2">
+                          <div className="space-y-2 min-w-0">
                             <h3 className="font-bold flex items-center gap-2 text-sm">
                               <User className="size-4 text-primary" />
                               Cliente
                             </h3>
-                            <p className="text-sm text-muted-foreground">{order.customer_name}</p>
-                            <p className="text-sm text-muted-foreground">{order.customer_phone}</p>
-                            <p className="text-sm text-muted-foreground flex items-start gap-1.5">
+                            <p className="text-sm text-muted-foreground break-words">{order.customer_name}</p>
+                            <p className="text-sm text-muted-foreground break-words">{order.customer_phone}</p>
+                            <p className="text-sm text-muted-foreground flex items-start gap-1.5 break-words">
                               <MapPin className="size-4 mt-0.5 shrink-0" />
-                              {order.address}, {order.city}
-                              {order.zip ? ` — CEP ${order.zip}` : ''}
+                              <span>
+                                {order.address}, {order.city}
+                                {order.zip ? ` — CEP ${order.zip}` : ''}
+                              </span>
                             </p>
                             <a
                               href={`/pedido/${order.id}`}
@@ -317,7 +356,8 @@ function AdminOrders() {
                               Abrir link de recuperação
                             </a>
                           </div>
-                          <div className="space-y-2">
+
+                          <div className="space-y-2 min-w-0">
                             <h3 className="font-bold text-sm">Itens</h3>
                             <div className="space-y-1.5">
                               {items.map((item: any, index: number) => (
@@ -337,15 +377,14 @@ function AdminOrders() {
                               <span>Total dos produtos</span>
                               <span className="text-primary">{formatPrice(order.total)}</span>
                             </div>
-                            </div>
                           </div>
-                          
-                          <div className="space-y-2">
+
+                          <div className="space-y-2 min-w-0">
                             <h3 className="font-bold flex items-center gap-2 text-sm">
                               <History className="size-4 text-primary" />
                               Histórico
                             </h3>
-                            <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2 scrollbar-thin">
+                            <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2">
                               {loadingHistory[order.id] ? (
                                 <p className="text-xs text-muted-foreground italic">Carregando histórico...</p>
                               ) : !history[order.id] || (history[order.id] as any[]).length === 0 ? (
@@ -369,8 +408,9 @@ function AdminOrders() {
                               )}
                             </div>
                           </div>
+                        </div>
 
-                        <div className="flex flex-wrap items-center gap-2 pt-2">
+                        <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-border">
                           <span className="text-sm font-bold mr-2">Alterar status:</span>
                           {STATUS_OPTIONS.map((option) => (
                             <Button
@@ -384,6 +424,18 @@ function AdminOrders() {
                               {option.label}
                             </Button>
                           ))}
+                        </div>
+
+                        <div className="pt-2 border-t border-border">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="font-bold text-destructive border-destructive/40 hover:bg-destructive/10"
+                            onClick={() => handleDelete(order.id, order.reference)}
+                          >
+                            <Trash2 className="size-4 mr-2" />
+                            Apagar pedido
+                          </Button>
                         </div>
                       </div>
                     )}
