@@ -1,23 +1,15 @@
 import { Instagram, Mail, MessageCircle, Send } from "lucide-react";
 import { useState, type FormEvent } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import {
   DEFAULT_WHATSAPP_URL,
   EMAIL,
   INSTAGRAM_HANDLE,
   INSTAGRAM_URL,
   WHATSAPP_DISPLAY,
-  buildWhatsAppUrl,
 } from "@/lib/whatsapp";
-
-const SERVICE_OPTIONS = [
-  "Câmeras",
-  "Portões Automáticos",
-  "Cerca Elétrica",
-  "Interfone",
-  "Fechadura Biométrica",
-  "Vídeo Porteiro",
-  "Outros",
-];
+import { SERVICE_OPTIONS } from "@/lib/contact-schema";
+import { submitContactForm } from "@/lib/contact.functions";
 
 function maskPhone(value: string) {
   const digits = value.replace(/\D/g, "").slice(0, 11);
@@ -37,9 +29,11 @@ type Errors = {
   telefone?: string | undefined;
   endereco?: string | undefined;
   cidade?: string | undefined;
+  descricao?: string | undefined;
 };
 
 export function ContactForm() {
+  const submit = useServerFn(submitContactForm);
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
   const [endereco, setEndereco] = useState("");
@@ -47,6 +41,7 @@ export function ContactForm() {
   const [servicos, setServicos] = useState<string[]>([]);
   const [descricao, setDescricao] = useState("");
   const [errors, setErrors] = useState<Errors>({});
+  const [formError, setFormError] = useState("");
   const [sent, setSent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -82,44 +77,58 @@ export function ContactForm() {
     return Object.keys(nextErrors).length === 0;
   }
 
-  function handleSubmit(event: FormEvent) {
+  function focusFirstError() {
+    const firstError = document.querySelector('[aria-invalid="true"]');
+    firstError?.scrollIntoView({ behavior: "smooth", block: "center" });
+    (firstError as HTMLElement)?.focus();
+  }
+
+  async function handleSubmit(event: FormEvent) {
     event.preventDefault();
+    setFormError("");
     setIsSubmitting(true);
 
     if (!validate()) {
       setIsSubmitting(false);
       // Rolar até o primeiro erro para acessibilidade
-      const firstError = document.querySelector('[aria-invalid="true"]');
-      firstError?.scrollIntoView({ behavior: "smooth", block: "center" });
-      (firstError as HTMLElement)?.focus();
+      setTimeout(focusFirstError, 0);
       return;
     }
 
-    const message = [
-      "*Novo contato pelo site SystemSeg*",
-      "",
-      `*Nome:* ${nome.trim()}`,
-      `*Telefone:* ${telefone}`,
-      `*Endereço:* ${endereco.trim()}`,
-      `*Cidade:* ${cidade.trim()}`,
-      `*Serviços de interesse:* ${servicos.length > 0 ? servicos.join(", ") : "Não informado"}`,
-      descricao.trim() ? `*Descrição:* ${descricao.trim()}` : "",
-    ]
-      .filter(Boolean)
-      .join("\n");
+    // Abre a aba de forma síncrona para não ser bloqueada pelo navegador.
+    const win = window.open("", "_blank");
+    if (win) win.opener = null;
 
     try {
-      window.open(buildWhatsAppUrl(message), "_blank", "noopener,noreferrer");
+      const result = await submit({
+        data: { nome, telefone, endereco, cidade, servicos, descricao },
+      });
+
+      if (!result.ok) {
+        win?.close();
+        setErrors(result.errors);
+        setTimeout(focusFirstError, 0);
+        return;
+      }
+
+      if (win) {
+        win.location.href = result.url;
+      } else {
+        window.location.href = result.url;
+      }
+
       setSent(true);
-      // Limpar formulário após envio bem-sucedido (opcional, mas bom UX)
       setNome("");
       setTelefone("");
       setEndereco("");
       setCidade("");
       setServicos([]);
       setDescricao("");
-    } catch (err) {
-      console.error("Erro ao abrir WhatsApp:", err);
+    } catch {
+      win?.close();
+      setFormError(
+        "Não foi possível enviar agora. Tente novamente ou fale direto no WhatsApp.",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -374,13 +383,34 @@ export function ContactForm() {
               <textarea
                 id="descricao"
                 value={descricao}
-                onChange={(e) => setDescricao(e.target.value)}
+                onChange={(e) => {
+                  setDescricao(e.target.value);
+                  if (errors.descricao)
+                    setErrors((prev) => ({ ...prev, descricao: undefined }));
+                }}
                 placeholder="Conte um pouco do que você precisa (opcional)"
                 rows={4}
                 maxLength={1000}
                 className={`${inputClass} resize-none`}
+                aria-invalid={!!errors.descricao}
+                aria-describedby={errors.descricao ? "descricao-error" : undefined}
               />
+              {errors.descricao && (
+                <p id="descricao-error" className="mt-1.5 text-xs font-medium text-destructive" role="alert">
+                  {errors.descricao}
+                </p>
+              )}
             </div>
+
+            {formError && (
+              <p
+                className="mt-6 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm font-medium text-destructive"
+                role="alert"
+              >
+                {formError}
+              </p>
+            )}
+
 
             <button
               type="submit"
