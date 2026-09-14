@@ -319,19 +319,21 @@ function AdminOrders() {
                     </button>
 
                     {isExpanded && (
-                      <div className="px-6 pb-6 pt-2 border-t border-border space-y-4">
+                      <div className="px-4 sm:px-6 pb-6 pt-2 border-t border-border space-y-4">
                         <div className="grid gap-6 md:grid-cols-3">
-                          <div className="space-y-2">
+                          <div className="space-y-2 min-w-0">
                             <h3 className="font-bold flex items-center gap-2 text-sm">
                               <User className="size-4 text-primary" />
                               Cliente
                             </h3>
-                            <p className="text-sm text-muted-foreground">{order.customer_name}</p>
-                            <p className="text-sm text-muted-foreground">{order.customer_phone}</p>
-                            <p className="text-sm text-muted-foreground flex items-start gap-1.5">
+                            <p className="text-sm text-muted-foreground break-words">{order.customer_name}</p>
+                            <p className="text-sm text-muted-foreground break-words">{order.customer_phone}</p>
+                            <p className="text-sm text-muted-foreground flex items-start gap-1.5 break-words">
                               <MapPin className="size-4 mt-0.5 shrink-0" />
-                              {order.address}, {order.city}
-                              {order.zip ? ` — CEP ${order.zip}` : ''}
+                              <span>
+                                {order.address}, {order.city}
+                                {order.zip ? ` — CEP ${order.zip}` : ''}
+                              </span>
                             </p>
                             <a
                               href={`/pedido/${order.id}`}
@@ -343,7 +345,8 @@ function AdminOrders() {
                               Abrir link de recuperação
                             </a>
                           </div>
-                          <div className="space-y-2">
+
+                          <div className="space-y-2 min-w-0">
                             <h3 className="font-bold text-sm">Itens</h3>
                             <div className="space-y-1.5">
                               {items.map((item: any, index: number) => (
@@ -363,15 +366,14 @@ function AdminOrders() {
                               <span>Total dos produtos</span>
                               <span className="text-primary">{formatPrice(order.total)}</span>
                             </div>
-                            </div>
                           </div>
-                          
-                          <div className="space-y-2">
+
+                          <div className="space-y-2 min-w-0">
                             <h3 className="font-bold flex items-center gap-2 text-sm">
                               <History className="size-4 text-primary" />
                               Histórico
                             </h3>
-                            <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2 scrollbar-thin">
+                            <div className="space-y-3 max-h-[200px] overflow-y-auto pr-2">
                               {loadingHistory[order.id] ? (
                                 <p className="text-xs text-muted-foreground italic">Carregando histórico...</p>
                               ) : !history[order.id] || (history[order.id] as any[]).length === 0 ? (
@@ -395,8 +397,9 @@ function AdminOrders() {
                               )}
                             </div>
                           </div>
+                        </div>
 
-                        <div className="flex flex-wrap items-center gap-2 pt-2">
+                        <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-border">
                           <span className="text-sm font-bold mr-2">Alterar status:</span>
                           {STATUS_OPTIONS.map((option) => (
                             <Button
@@ -410,6 +413,18 @@ function AdminOrders() {
                               {option.label}
                             </Button>
                           ))}
+                        </div>
+
+                        <div className="pt-2 border-t border-border">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="font-bold text-destructive border-destructive/40 hover:bg-destructive/10"
+                            onClick={() => handleDelete(order.id, order.reference)}
+                          >
+                            <Trash2 className="size-4 mr-2" />
+                            Apagar pedido
+                          </Button>
                         </div>
                       </div>
                     )}
