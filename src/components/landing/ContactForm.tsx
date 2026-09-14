@@ -29,9 +29,11 @@ type Errors = {
   telefone?: string | undefined;
   endereco?: string | undefined;
   cidade?: string | undefined;
+  descricao?: string | undefined;
 };
 
 export function ContactForm() {
+  const submit = useServerFn(submitContactForm);
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
   const [endereco, setEndereco] = useState("");
@@ -39,6 +41,7 @@ export function ContactForm() {
   const [servicos, setServicos] = useState<string[]>([]);
   const [descricao, setDescricao] = useState("");
   const [errors, setErrors] = useState<Errors>({});
+  const [formError, setFormError] = useState("");
   const [sent, setSent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -74,44 +77,57 @@ export function ContactForm() {
     return Object.keys(nextErrors).length === 0;
   }
 
-  function handleSubmit(event: FormEvent) {
+  function focusFirstError() {
+    const firstError = document.querySelector('[aria-invalid="true"]');
+    firstError?.scrollIntoView({ behavior: "smooth", block: "center" });
+    (firstError as HTMLElement)?.focus();
+  }
+
+  async function handleSubmit(event: FormEvent) {
     event.preventDefault();
+    setFormError("");
     setIsSubmitting(true);
 
     if (!validate()) {
       setIsSubmitting(false);
       // Rolar até o primeiro erro para acessibilidade
-      const firstError = document.querySelector('[aria-invalid="true"]');
-      firstError?.scrollIntoView({ behavior: "smooth", block: "center" });
-      (firstError as HTMLElement)?.focus();
+      setTimeout(focusFirstError, 0);
       return;
     }
 
-    const message = [
-      "*Novo contato pelo site SystemSeg*",
-      "",
-      `*Nome:* ${nome.trim()}`,
-      `*Telefone:* ${telefone}`,
-      `*Endereço:* ${endereco.trim()}`,
-      `*Cidade:* ${cidade.trim()}`,
-      `*Serviços de interesse:* ${servicos.length > 0 ? servicos.join(", ") : "Não informado"}`,
-      descricao.trim() ? `*Descrição:* ${descricao.trim()}` : "",
-    ]
-      .filter(Boolean)
-      .join("\n");
+    // Abre a aba de forma síncrona para não ser bloqueada pelo navegador.
+    const win = window.open("", "_blank", "noopener,noreferrer");
 
     try {
-      window.open(buildWhatsAppUrl(message), "_blank", "noopener,noreferrer");
+      const result = await submit({
+        data: { nome, telefone, endereco, cidade, servicos, descricao },
+      });
+
+      if (!result.ok) {
+        win?.close();
+        setErrors(result.errors);
+        setTimeout(focusFirstError, 0);
+        return;
+      }
+
+      if (win) {
+        win.location.href = result.url;
+      } else {
+        window.location.href = result.url;
+      }
+
       setSent(true);
-      // Limpar formulário após envio bem-sucedido (opcional, mas bom UX)
       setNome("");
       setTelefone("");
       setEndereco("");
       setCidade("");
       setServicos([]);
       setDescricao("");
-    } catch (err) {
-      console.error("Erro ao abrir WhatsApp:", err);
+    } catch {
+      win?.close();
+      setFormError(
+        "Não foi possível enviar agora. Tente novamente ou fale direto no WhatsApp.",
+      );
     } finally {
       setIsSubmitting(false);
     }
