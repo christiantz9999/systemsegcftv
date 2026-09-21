@@ -5,4 +5,5 @@
 - [x] Concluir sugestões de resposta com aprovação antes do envio
 - [x] Verificar compilação e erros de execução
 - [x] Testar painel (Clientes e Mensagens) em desktop e celular
+- [x] Paginação na lista de clientes
 - [ ] ÚLTIMA ETAPA: notificação por e-mail do formulário (bloqueada: falta domínio de e-mail configurado)
