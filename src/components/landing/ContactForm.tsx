@@ -434,8 +434,8 @@ export function ContactForm() {
             )}
 
             <p className="mt-4 text-center text-xs text-muted-foreground">
-              Ao enviar, o WhatsApp abre com o formulário completo — nenhum dado
-              fica armazenado no site.
+              Ao enviar, o WhatsApp abre com o formulário completo e sua
+              solicitação fica registrada para o nosso atendimento.
             </p>
           </form>
         </div>
