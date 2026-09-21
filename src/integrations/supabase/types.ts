@@ -178,6 +178,7 @@ export type Database = {
           customer_phone: string
           id: string
           items: Json
+          payment_method: string | null
           reference: string
           status: string
           total: number
@@ -192,6 +193,7 @@ export type Database = {
           customer_phone: string
           id?: string
           items?: Json
+          payment_method?: string | null
           reference: string
           status?: string
           total?: number
@@ -206,6 +208,7 @@ export type Database = {
           customer_phone?: string
           id?: string
           items?: Json
+          payment_method?: string | null
           reference?: string
           status?: string
           total?: number
