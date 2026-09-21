@@ -68,10 +68,14 @@ export type ContactFieldErrors = Partial<
   Record<"nome" | "telefone" | "endereco" | "cidade" | "descricao", string>
 >;
 
-export function formatPhone(digits: string) {
+export function formatPhone(input: string) {
+  let digits = (input ?? "").replace(/\D/g, "");
+  if (digits.length > 11 && digits.startsWith("55")) digits = digits.slice(2);
   if (digits.length === 11)
     return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
-  return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+  if (digits.length === 10)
+    return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+  return digits || input;
 }
 
 export function buildContactMessage(data: ContactData) {

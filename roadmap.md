@@ -1,8 +1,8 @@
 # Roadmap
 
-- [ ] Integrar Clientes e Mensagens ao painel administrativo
-- [ ] Corrigir validações e falhas nas telas novas
-- [ ] Concluir sugestões de resposta com aprovação antes do envio
-- [ ] Configurar a base da notificação por e-mail e registrar bloqueio de domínio, se houver
-- [ ] Testar painel em desktop e celular
-- [ ] Verificar compilação e erros de execução
+- [x] Integrar Clientes e Mensagens ao painel administrativo
+- [x] Corrigir validações e falhas nas telas novas
+- [x] Concluir sugestões de resposta com aprovação antes do envio
+- [x] Verificar compilação e erros de execução
+- [x] Testar painel (Clientes e Mensagens) em desktop e celular
+- [ ] ÚLTIMA ETAPA: notificação por e-mail do formulário (bloqueada: falta domínio de e-mail configurado)
