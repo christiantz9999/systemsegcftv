@@ -60,6 +60,8 @@ const STATUS_LABEL: Record<string, string> = {
 
 const emptyForm = { name: '', phone: '', email: '', address: '', city: '', notes: '' }
 
+const PAGE_SIZE = 10
+
 function AdminCustomers() {
   const [customers, setCustomers] = useState<Customer[]>([])
   const [orders, setOrders] = useState<Order[]>([])
@@ -69,6 +71,7 @@ function AdminCustomers() {
   const [form, setForm] = useState(emptyForm)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [openId, setOpenId] = useState<string | null>(null)
+  const [page, setPage] = useState(1)
 
   useEffect(() => {
     fetchAll()
@@ -163,6 +166,10 @@ function AdminCustomers() {
     )
   })
 
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const currentPage = Math.min(page, totalPages)
+  const paginated = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
@@ -243,7 +250,10 @@ function AdminCustomers() {
             <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value)
+                setPage(1)
+              }}
               placeholder="Buscar cliente por nome, telefone ou cidade"
               className="pl-9"
             />
@@ -257,7 +267,7 @@ function AdminCustomers() {
             </div>
           ) : (
             <ul className="space-y-4">
-              {filtered.map((c) => {
+              {paginated.map((c) => {
                 const list = ordersOf(c.phone)
                 const open = openId === c.id
                 return (
@@ -354,6 +364,32 @@ function AdminCustomers() {
                 )
               })}
             </ul>
+          )}
+
+          {!isLoading && filtered.length > PAGE_SIZE && (
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="text-sm text-muted-foreground">
+                Página {currentPage} de {totalPages} · {filtered.length} clientes
+              </p>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={currentPage <= 1}
+                  onClick={() => setPage(currentPage - 1)}
+                >
+                  Anterior
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={currentPage >= totalPages}
+                  onClick={() => setPage(currentPage + 1)}
+                >
+                  Próxima
+                </Button>
+              </div>
+            </div>
           )}
         </div>
       </div>
