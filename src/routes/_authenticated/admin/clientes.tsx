@@ -267,7 +267,7 @@ function AdminCustomers() {
             </div>
           ) : (
             <ul className="space-y-4">
-              {filtered.map((c) => {
+              {paginated.map((c) => {
                 const list = ordersOf(c.phone)
                 const open = openId === c.id
                 return (
@@ -364,6 +364,32 @@ function AdminCustomers() {
                 )
               })}
             </ul>
+          )}
+
+          {!isLoading && filtered.length > PAGE_SIZE && (
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="text-sm text-muted-foreground">
+                Página {currentPage} de {totalPages} · {filtered.length} clientes
+              </p>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={currentPage <= 1}
+                  onClick={() => setPage(currentPage - 1)}
+                >
+                  Anterior
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={currentPage >= totalPages}
+                  onClick={() => setPage(currentPage + 1)}
+                >
+                  Próxima
+                </Button>
+              </div>
+            </div>
           )}
         </div>
       </div>
