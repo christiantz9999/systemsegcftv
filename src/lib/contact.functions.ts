@@ -8,14 +8,14 @@ import { buildWhatsAppUrl } from "./whatsapp";
 
 type SubmitResult =
   | { ok: true; url: string; message: string }
-  | { ok: false; errors: ContactFieldErrors };
+  | { ok: false; errors: ContactFieldErrors; formError?: string };
 
 /**
  * Valida o formulário de contato no servidor, aplicando as mesmas regras do
  * cliente, e devolve a mensagem/URL do WhatsApp já higienizada.
  */
 export const submitContactForm = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => input)
+  .validator((input: unknown) => input)
   .handler(async ({ data }): Promise<SubmitResult> => {
     const parsed = contactSchema.safeParse(data);
 
@@ -39,7 +39,7 @@ export const submitContactForm = createServerFn({ method: "POST" })
     // Registra a mensagem no painel administrativo (independe do WhatsApp).
     try {
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-      await supabaseAdmin.from("contact_messages").insert({
+      const { error } = await supabaseAdmin.from("contact_messages").insert({
         name: parsed.data.nome,
         phone: parsed.data.telefone,
         address: parsed.data.endereco,
@@ -47,8 +47,14 @@ export const submitContactForm = createServerFn({ method: "POST" })
         services: parsed.data.servicos,
         description: parsed.data.descricao || null,
       });
+      if (error) throw error;
     } catch (error) {
       console.error("Falha ao registrar mensagem de contato", error);
+      return {
+        ok: false,
+        errors: {},
+        formError: "Não foi possível registrar sua mensagem agora. Tente novamente em instantes.",
+      };
     }
 
     return { ok: true, url: buildWhatsAppUrl(message), message };

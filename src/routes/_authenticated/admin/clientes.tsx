@@ -9,6 +9,16 @@ import { toast } from 'sonner'
 import { ArrowLeft, Users, Search, Plus, Pencil, Trash2, Check, X, Phone } from 'lucide-react'
 
 export const Route = createFileRoute('/_authenticated/admin/clientes')({
+  head: () => ({
+    meta: [
+      { title: 'Clientes | Painel SystemSeg' },
+      { name: 'description', content: 'Cadastro de clientes e histórico de pedidos da SystemSeg.' },
+      { property: 'og:title', content: 'Clientes | Painel SystemSeg' },
+      { property: 'og:description', content: 'Cadastro de clientes e histórico de pedidos da SystemSeg.' },
+      { property: 'og:type', content: 'website' },
+      { name: 'twitter:card', content: 'summary' },
+    ],
+  }),
   component: AdminCustomers,
 })
 
@@ -71,7 +81,7 @@ function AdminCustomers() {
       supabase.from('orders').select('id, reference, customer_phone, total, status, created_at'),
       supabase.from('order_history').select('*').order('created_at', { ascending: false }),
     ])
-    if (c.error || o.error) toast.error('Erro ao carregar dados')
+    if (c.error || o.error || h.error) toast.error('Erro ao carregar dados')
     setCustomers((c.data || []) as Customer[])
     setOrders((o.data || []) as Order[])
     setHistory((h.data || []) as OrderHistory[])
@@ -96,6 +106,13 @@ function AdminCustomers() {
       address: form.address.trim() || null,
       city: form.city.trim() || null,
       notes: form.notes.trim() || null,
+    }
+    const duplicate = customers.some(
+      (customer) => customer.id !== editingId && digits(customer.phone) === payload.phone,
+    )
+    if (duplicate) {
+      toast.error('Já existe um cliente cadastrado com este telefone.')
+      return
     }
     const { error } = editingId
       ? await supabase.from('customers').update(payload).eq('id', editingId)
@@ -125,6 +142,7 @@ function AdminCustomers() {
   }
 
   const handleDelete = async (id: string) => {
+    if (!window.confirm('Excluir este cliente? Os pedidos já registrados serão mantidos.')) return
     const { error } = await supabase.from('customers').delete().eq('id', id)
     if (error) toast.error('Erro ao excluir cliente')
     else {
@@ -247,7 +265,7 @@ function AdminCustomers() {
                     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4">
                       <div className="min-w-0">
                         <p className="truncate text-lg font-bold">{c.name}</p>
-                        <p className="flex items-center gap-2 text-sm text-muted-foreground">
+                         <p className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                           <Phone className="size-3.5 shrink-0" /> {c.phone}
                           {c.city ? ` · ${c.city}` : ''}
                         </p>
@@ -276,7 +294,7 @@ function AdminCustomers() {
                         {open ? 'Ocultar pedidos' : `Ver pedidos (${list.length})`}
                       </Button>
                       <a
-                        href={`https://wa.me/55${c.phone}`}
+                        href={`https://wa.me/${digits(c.phone).startsWith('55') ? digits(c.phone) : `55${digits(c.phone)}`}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-sm font-semibold text-primary hover:underline"

@@ -12,6 +12,16 @@ import { toast } from 'sonner'
 import { ArrowLeft, MessageSquare, Search, Sparkles, Check, Trash2, Send } from 'lucide-react'
 
 export const Route = createFileRoute('/_authenticated/admin/mensagens')({
+  head: () => ({
+    meta: [
+      { title: 'Mensagens do site | Painel SystemSeg' },
+      { name: 'description', content: 'Mensagens recebidas pelo formulário de contato da SystemSeg.' },
+      { property: 'og:title', content: 'Mensagens do site | Painel SystemSeg' },
+      { property: 'og:description', content: 'Mensagens recebidas pelo formulário de contato da SystemSeg.' },
+      { property: 'og:type', content: 'website' },
+      { name: 'twitter:card', content: 'summary' },
+    ],
+  }),
   component: AdminMessages,
 })
 
@@ -77,10 +87,14 @@ function AdminMessages() {
         return
       }
       setDraft(result.suggestion)
-      await supabase
+      const { error } = await supabase
         .from('contact_messages')
         .update({ ai_suggestion: result.suggestion })
         .eq('id', m.id)
+      if (error) {
+        toast.error('A sugestão foi gerada, mas não pôde ser salva.')
+        return
+      }
       setMessages((prev) =>
         prev.map((item) => (item.id === m.id ? { ...item, ai_suggestion: result.suggestion } : item)),
       )
@@ -104,8 +118,12 @@ function AdminMessages() {
       toast.error('Erro ao salvar a resposta')
       return
     }
-    toast.success('Resposta aprovada')
-    fetchMessages()
+    setMessages((prev) =>
+      prev.map((item) =>
+        item.id === m.id ? { ...item, approved_reply: reply, status: 'answered' } : item,
+      ),
+    )
+    toast.success('Resposta aprovada e pronta para envio')
   }
 
   const handleSend = (m: ContactMessage) => {
@@ -114,7 +132,13 @@ function AdminMessages() {
       toast.error('Escreva ou gere uma resposta antes de enviar.')
       return
     }
-    window.open(`https://wa.me/55${m.phone}?text=${encodeURIComponent(reply)}`, '_blank')
+    if (m.approved_reply !== reply) {
+      toast.error('Aprove esta versão da resposta antes de enviar.')
+      return
+    }
+    const phone = m.phone.replace(/\D/g, '')
+    const destination = phone.startsWith('55') ? phone : `55${phone}`
+    window.open(`https://wa.me/${destination}?text=${encodeURIComponent(reply)}`, '_blank', 'noopener,noreferrer')
   }
 
   const handleStatus = async (id: string, status: string) => {
@@ -124,6 +148,7 @@ function AdminMessages() {
   }
 
   const handleDelete = async (id: string) => {
+    if (!window.confirm('Apagar esta mensagem? Esta ação não pode ser desfeita.')) return
     const { error } = await supabase.from('contact_messages').delete().eq('id', id)
     if (error) toast.error('Erro ao apagar mensagem')
     else {
@@ -283,7 +308,12 @@ function AdminMessages() {
                           <Button size="sm" onClick={() => handleApprove(m)}>
                             <Check className="size-4" /> Aprovar resposta
                           </Button>
-                          <Button size="sm" variant="outline" onClick={() => handleSend(m)}>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleSend(m)}
+                            disabled={!draft.trim() || m.approved_reply !== draft.trim()}
+                          >
                             <Send className="size-4" /> Enviar no WhatsApp
                           </Button>
                         </div>

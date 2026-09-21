@@ -107,6 +107,7 @@ export function ContactForm() {
       if (!result.ok) {
         win?.close();
         setErrors(result.errors);
+        setFormError(result.formError || "Confira os dados informados e tente novamente.");
         setTimeout(focusFirstError, 0);
         return;
       }
