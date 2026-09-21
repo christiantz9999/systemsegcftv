@@ -1,13 +1,14 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { z } from "zod";
 
-type SuggestInput = {
-  nome: string;
-  telefone: string;
-  cidade: string;
-  servicos: string[];
-  descricao: string;
-};
+const suggestInputSchema = z.object({
+  nome: z.string().trim().min(3).max(100),
+  telefone: z.string().trim().min(10).max(20),
+  cidade: z.string().trim().max(80),
+  servicos: z.array(z.string().trim().min(1).max(80)).max(7),
+  descricao: z.string().trim().max(1000),
+});
 
 type SuggestResult = { ok: true; suggestion: string } | { ok: false; error: string };
 
@@ -17,7 +18,7 @@ type SuggestResult = { ok: true; suggestion: string } | { ok: false; error: stri
  */
 export const suggestContactReply = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: SuggestInput) => input)
+  .validator((input: unknown) => suggestInputSchema.parse(input))
   .handler(async ({ data, context }): Promise<SuggestResult> => {
     const { data: isAdmin } = await context.supabase.rpc("has_role", {
       _user_id: context.userId,

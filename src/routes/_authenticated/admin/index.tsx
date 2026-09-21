@@ -1,10 +1,21 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Header } from '@/components/landing/Header'
 import { Footer } from '@/components/landing/Footer'
-import { LayoutDashboard, Package, Tag, Settings, LogOut, ShoppingCart } from 'lucide-react'
+import { LayoutDashboard, Package, Tag, LogOut, ShoppingCart, Users, MessageSquare } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { supabase } from '@/integrations/supabase/client'
 
 export const Route = createFileRoute('/_authenticated/admin/')({
+  head: () => ({
+    meta: [
+      { title: 'Painel administrativo | SystemSeg' },
+      { name: 'description', content: 'Gerenciamento da loja, clientes, pedidos e contatos da SystemSeg.' },
+      { property: 'og:title', content: 'Painel administrativo | SystemSeg' },
+      { property: 'og:description', content: 'Gerenciamento da loja, clientes, pedidos e contatos da SystemSeg.' },
+      { property: 'og:type', content: 'website' },
+      { name: 'twitter:card', content: 'summary' },
+    ],
+  }),
   component: AdminDashboard,
 })
 
@@ -48,13 +59,22 @@ function AdminDashboard() {
                   <ShoppingCart className="size-5" />
                   Pedidos
                 </Link>
-                <button
+                <Link to="/admin/clientes" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/50 transition-colors text-muted-foreground hover:text-foreground">
+                  <Users className="size-5" />
+                  Clientes
+                </Link>
+                <Link to="/admin/mensagens" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/50 transition-colors text-muted-foreground hover:text-foreground">
+                  <MessageSquare className="size-5" />
+                  Mensagens
+                </Link>
+                <Button
+                  variant="ghost"
                   onClick={handleLogout}
-                  className="flex w-full items-center gap-3 px-4 py-3 rounded-xl hover:bg-destructive/10 hover:text-destructive transition-all text-left"
+                  className="h-auto w-full justify-start gap-3 rounded-xl px-4 py-3 hover:bg-destructive/10 hover:text-destructive"
                 >
                   <LogOut className="size-5" />
                   Sair
-                </button>
+                </Button>
               </nav>
             </aside>
 
@@ -87,6 +107,22 @@ function AdminDashboard() {
                     <Package className="size-8 text-primary mb-4" />
                     <h3 className="font-bold mb-2">Novo Produto</h3>
                     <p className="text-sm text-muted-foreground">Adicione um novo item ao catálogo da loja.</p>
+                  </Link>
+                  <Link
+                    to="/admin/clientes"
+                    className="p-6 rounded-xl border border-border hover:border-primary/50 transition-all group"
+                  >
+                    <Users className="size-8 text-primary mb-4" />
+                    <h3 className="font-bold mb-2">Clientes</h3>
+                    <p className="text-sm text-muted-foreground">Cadastre clientes e consulte seus pedidos.</p>
+                  </Link>
+                  <Link
+                    to="/admin/mensagens"
+                    className="p-6 rounded-xl border border-border hover:border-primary/50 transition-all group"
+                  >
+                    <MessageSquare className="size-8 text-primary mb-4" />
+                    <h3 className="font-bold mb-2">Mensagens do site</h3>
+                    <p className="text-sm text-muted-foreground">Veja contatos e aprove respostas sugeridas.</p>
                   </Link>
                   <Link 
                     to="/admin/categorias" 
